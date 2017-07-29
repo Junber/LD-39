@@ -9,7 +9,7 @@ public:
     bool dead;
     std::string dead_tex;
 
-    Enemy(int x, int y, int hitbox, int life, std::string s);
+    Enemy(int x, int y, int hitbox, int life, int cooldown, std::string s);
     ~Enemy();
     void update();
     void kill();

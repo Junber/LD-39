@@ -51,11 +51,13 @@ bool Object::collides(Object* with)
 
 //Person
 
-Person::Person(int x, int y, int hitbox, int life, std::string s) : Object(x, y, hitbox, s)
+Person::Person(int x, int y, int hitbox, int life, int cooldown, std::string s) : Object(x, y, hitbox, s)
 {
     lifepower = life;
     bullet_size=5;
     bullet_range=60;
+
+    cur_cooldown = max_cooldown = cooldown;
 
     life_draining = true;
 }

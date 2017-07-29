@@ -10,7 +10,7 @@ Player* player;
 
 //Enemy
 
-Enemy::Enemy(int x, int y, int hitbox, int life, std::string s): Person(x, y, hitbox, life, s)
+Enemy::Enemy(int x, int y, int hitbox, int life, int cooldown, std::string s): Person(x, y, hitbox, life, cooldown, s)
 {
     player = false;
     dead = false;
@@ -43,7 +43,7 @@ void Enemy::update()
 
 //Player
 
-Player::Player() : Person(0,0, 3,100, "Player")
+Player::Player() : Person(0,0, 3,100, 60, "Player")
 {
     player = true;
 
@@ -65,6 +65,8 @@ void Player::update()
 
     rotation = std::atan2(y-pos[1],x-pos[0])*180/M_PI+90;
 
+    if (cur_cooldown>0) cur_cooldown--;
+
     for (Obstacle* o: obstacles)
     {
         if (o->collides(this)) o->push_away(this);
@@ -73,34 +75,39 @@ void Player::update()
 
 void Player::shoot(int x, int y)
 {
-    int dx = x-pos[0], dy = y-pos[1], sum = abs(dx)+abs(dy);
-
-    switch (age)
+    if (cur_cooldown <= 0)
     {
-    case overpowered:
-        new Shockwave(this);
-        break;
-    case laser:
-        new Laser(this,x,y);
-        break;
-    case life_drain:
-        new Bullet(this, 5.*dx/sum, 5.*dy/sum);
-        break;
-    case squaregun:
-        new Bullet(this, 10.*dx/sum, 10.*dy/sum);
-        for (int i=-1;i<=1;i++)
+        cur_cooldown = max_cooldown;
+
+        int dx = x-pos[0], dy = y-pos[1], sum = abs(dx)+abs(dy);
+
+        switch (age)
         {
-            for (int u=-1;u<=1;u++) new Bullet(this, 10.*dx/sum+i, 10.*dy/sum+u);
+        case overpowered:
+            new Shockwave(this);
+            break;
+        case laser:
+            new Laser(this,x,y);
+            break;
+        case life_drain:
+            new Bullet(this, 5.*dx/sum, 5.*dy/sum);
+            break;
+        case squaregun:
+            new Bullet(this, 10.*dx/sum, 10.*dy/sum);
+            for (int i=-1;i<=1;i++)
+            {
+                for (int u=-1;u<=1;u++) new Bullet(this, 10.*dx/sum+i, 10.*dy/sum+u);
+            }
+            break;
+        case pistol:
+            new Bullet(this, 10.*dx/sum, 10.*dy/sum);
+            break;
+        case cane:
+            new Melee(this);
+            break;
+        case dead:
+            break;
         }
-        break;
-    case pistol:
-        new Bullet(this, 10.*dx/sum, 10.*dy/sum);
-        break;
-    case cane:
-        new Melee(this);
-        break;
-    case dead:
-        break;
     }
 }
 
@@ -134,7 +141,7 @@ void Player::kill()
 
 //NPC
 
-NPC::NPC(int x, int y, int hitbox, std::string s) : Person(x, y, hitbox, 1, s)
+NPC::NPC(int x, int y, int hitbox, std::string s) : Person(x, y, hitbox, 0, 1, s)
 {
     player = dead = scared = false;
     friends.push_back(this);

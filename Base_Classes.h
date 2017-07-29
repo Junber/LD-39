@@ -28,10 +28,10 @@ public:
 class Person: public Object
 {
 public:
-    int lifepower, bullet_size, bullet_range;
+    int lifepower, bullet_size, bullet_range, cur_cooldown, max_cooldown;
     bool player, life_draining;
 
-    Person(int x, int y, int hitbox, int life, std::string s);
+    Person(int x, int y, int hitbox, int life, int cooldown, std::string s);
     void attack(Person* attacker);
     virtual void kill() {};
 };
