@@ -3,6 +3,7 @@
 #include "Subbullets.h"
 #include "Loading.h"
 #include "Obstacles.h"
+#include <iostream>
 
 std::deque<Person*> enemies, dead_enemies, friends, dead_friends;
 Player* player;
@@ -135,11 +136,13 @@ void Player::kill()
 
 NPC::NPC(int x, int y, int hitbox, std::string s) : Person(x, y, hitbox, 1, s)
 {
-    player = false;
-    dead = false;
+    player = dead = scared = false;
     friends.push_back(this);
 
     dead_tex = s+"_dead";
+
+    real_pos[0] = pos[0];
+    real_pos[1] = pos[1];
 }
 
 NPC::~NPC()
@@ -148,9 +151,65 @@ NPC::~NPC()
     else remove_it(&friends, (Person*) this);
 }
 
+int sign (int x)
+{
+    return (x>0?1:(x<0?-1:0));
+}
+
+const int circle_radius = 50;
 void NPC::update()
 {
+    Person* run_from = nullptr;
+    for (Person* p: enemies)
+    {
+        if (std::pow(pos[0]-p->pos[0],2)+std::pow(pos[1]-p->pos[1],2) < 2500)
+        {
+            scared = true;
+            run_from = p;
+            break;
+        }
+        else if (scared && std::pow(pos[0]-p->pos[0],2)+std::pow(pos[1]-p->pos[1],2) < 40000)
+        {
+            run_from = p;
+            break;
+        }
+    }
 
+    if (!run_from)
+    {
+        scared = false;
+
+        float dx = circle_around[0]-real_pos[0], dy = circle_around[1]-real_pos[1], sum = abs(dx)+abs(dy);
+
+        if (std::pow(pos[0]-circle_around[0],2)+std::pow(pos[1]-circle_around[1],2) < std::pow(circle_radius-2,2))
+        {
+            real_pos[0] -= 2.*dx/sum;
+            real_pos[1] -= 2.*dy/sum;
+        }
+        else
+        {
+            double angle = std::atan2(dy,dx);
+            angle += 0.02;
+            real_pos[0] = circle_around[0]-std::cos(angle)*circle_radius;
+            real_pos[1] = circle_around[1]-std::sin(angle)*circle_radius;
+        }
+
+        pos[0] = real_pos[0];
+        pos[1] = real_pos[1];
+    }
+    else
+    {
+        int dx = run_from->pos[0]-pos[0], dy = run_from->pos[1]-pos[1], sum = abs(dx)+abs(dy);
+
+        pos[0] -= 4*dx/sum;
+        pos[1] -= 4*dy/sum;
+
+        circle_around[0] = pos[0]+circle_radius*dx/sum;
+        circle_around[1] = pos[1]+circle_radius*dy/sum;
+
+        real_pos[0] = pos[0];
+        real_pos[1] = pos[1];
+    }
 }
 
 void NPC::kill()

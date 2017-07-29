@@ -34,7 +34,9 @@ public:
 class NPC: public Person
 {
 public:
-    bool dead;
+    bool dead, scared;
+    int circle_around[2];
+    float real_pos[2];
     std::string dead_tex;
 
     NPC(int x, int y, int hitbox, std::string s);
