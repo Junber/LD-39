@@ -15,6 +15,7 @@ class Object
 {
 public:
     int pos[2], render_size[2], hitbox_size, obstacle_hitbox, iframes;
+    SDL_Point rotate_center;
     double rotation;
     SDL_Texture *tex, *itex;
 

@@ -30,6 +30,7 @@ public:
     void update();
     void shoot(int x, int y);
     void kill();
+    void render();
     int get_anim_frame();
     int get_anim_type();
 };

@@ -4,6 +4,7 @@
 #include "Loading.h"
 #include "Obstacles.h"
 #include <iostream>
+#include "SDL2_gfxPrimitives.h"
 
 std::deque<Person*> enemies, dead_enemies, friends, dead_friends;
 Player* player;
@@ -48,17 +49,21 @@ void Enemy::update()
 
 //Player
 
-Player::Player() : Person(0,0, 3,100, 10, "Player")
+const int hitbox_offset = 5;
+Player::Player() : Person(0,0, 3, 100,100, "age1")
 {
     player = true;
     speed = 1;
 
     cur_anim_frame = 0;
+    cur_cooldown = 0;
 
     render_size[0] = render_size[1] = 32;
 
-    age = laser;//overpowered;
-    hitbox_size = 1;
+    rotate_center = {render_size[0]/2-hitbox_offset,render_size[1]/2};
+
+    age = overpowered;
+    hitbox_size = 4;
 }
 
 void Player::update()
@@ -67,33 +72,43 @@ void Player::update()
 
     bool moving = false;
 
-    if (state[SDL_SCANCODE_D])
-    {
-        pos[0] += speed;
-        moving = true;
-    }
-    else if (state[SDL_SCANCODE_A])
-    {
-        pos[0] -= speed;
-        moving = true;
-    }
-    if (state[SDL_SCANCODE_S])
-    {
-        pos[1] += speed;
-        moving = true;
-    }
-    else if (state[SDL_SCANCODE_W])
-    {
-        pos[1] -= speed;
-        moving = true;
-    }
-
     int x, y;
     SDL_GetMouseState(&x,&y);
+    x /= zoom;
+    y /= zoom;
 
-    rotation = std::atan2(y-pos[1],x-pos[0])*180/M_PI;
+    if (!(age==overpowered && cur_cooldown > 0))
+    {
+        if (state[SDL_SCANCODE_D])
+        {
+            pos[0] += speed;
+            moving = true;
+        }
+        else if (state[SDL_SCANCODE_A])
+        {
+            pos[0] -= speed;
+            moving = true;
+        }
+        if (state[SDL_SCANCODE_S])
+        {
+            pos[1] += speed;
+            moving = true;
+        }
+        else if (state[SDL_SCANCODE_W])
+        {
+            pos[1] -= speed;
+            moving = true;
+        }
 
-    if (moving) cur_anim_frame++;
+        if (age == cane && cur_cooldown == max_cooldown-25/speed) new Melee(this);
+
+        if (age == cane && cur_cooldown <= max_cooldown-25/speed && cur_cooldown > 3*max_cooldown/4) rotation += 360/(max_cooldown/4-25/speed);
+        else rotation = std::atan2(y-pos[1],x-pos[0])*180/M_PI;
+    }
+
+
+
+    if (moving || (age==cane && get_anim_type()==1)) cur_anim_frame++;
     if (cur_cooldown>0) cur_cooldown--;
     if (iframes>0) iframes--;
 
@@ -133,7 +148,7 @@ void Player::shoot(int x, int y)
             new Bullet(this, 10.*dx/sum, 10.*dy/sum);
             break;
         case cane:
-            new Melee(this);
+            //the Melee is spawned later
             break;
         case dead:
             break;
@@ -146,7 +161,18 @@ void Player::kill()
     age=static_cast<Ages>(age+1);
     lifepower=100;
 
+    if (age>overpowered) max_cooldown=10;
+    if (age>laser) bullet_range = 30;
     if (age>=squaregun) life_draining = false;
+    if (age>=cane)
+    {
+        max_cooldown = 240;
+        bullet_size = 15;
+        bullet_range = max_cooldown/4;
+    }
+
+    tex = load_image("age"+std::to_string(age+1));
+    itex = load_image("age"+std::to_string(age+1)+(std::string)"_white");
 
     if (age>=dead)
     {
@@ -169,21 +195,36 @@ void Player::kill()
     }
 }
 
+void Player::render()
+{
+    pos[0] += hitbox_offset;
+    Person::render();
+    pos[0] -= hitbox_offset;
+
+    SDL_SetRenderDrawColor(renderer,255,255,255,255);
+    SDL_RenderDrawPoint(renderer,pos[0],pos[1]);
+    circleRGBA(renderer,pos[0],pos[1],hitbox_size,255,255,255,255);
+}
+
 int Player::get_anim_frame()
 {
-    cur_anim_frame %= 50/speed;
+    if (!(age==cane && get_anim_type()==1)) cur_anim_frame %= 50/speed;
 
-    if (cur_anim_frame < 15/speed) return 0;
+    if (age==overpowered && get_anim_type()==1) return 0;
+    else if (cur_anim_frame < 15/speed) return 0;
     else if (cur_anim_frame < 25/speed) return 1;
     else if (cur_anim_frame < 40/speed) return 2;
-    else if (cur_anim_frame < 50/speed) return 1;
+    else if (cur_anim_frame < 50/speed) return (age>=pistol?3:1);
+    else if (age==cane && get_anim_type()==1) return 4;
 
     return 0; //shouldn't happen
 }
 
 int Player::get_anim_type()
 {
-    if (cur_cooldown < 3*max_cooldown/4) return 0;
+    if (age==overpowered && cur_cooldown > 0) return 1;
+
+    if (age == squaregun || age == pistol || cur_cooldown < 3*max_cooldown/4) return 0;
     else return 1;
 }
 
@@ -274,6 +315,6 @@ void NPC::kill()
     remove_it(&friends, (Person*) this);
     dead_friends.push_back(this);
     dead = true;
-    tex = load_image(dead_tex);
+    tex = itex = load_image(dead_tex);
     iframes = 0;
 }

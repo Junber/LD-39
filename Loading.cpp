@@ -3,8 +3,6 @@
 #include <SDL_image.h>
 #include <map>
 
-const int window[2] = {500,500};
-
 SDL_Window* renderwindow;
 SDL_Renderer* renderer;
 bool breakk = false;
@@ -39,6 +37,6 @@ SDL_Texture* load_image(std::string s)
 
 void init_window()
 {
-    renderwindow = SDL_CreateWindow("LD-39", 50, 50, window[0], window[1], SDL_WINDOW_SHOWN);
+    renderwindow = SDL_CreateWindow("LD-39", 50, 50, window[0]*zoom, window[1]*zoom, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(renderwindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 }
