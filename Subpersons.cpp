@@ -4,7 +4,7 @@
 #include "Loading.h"
 
 std::deque<Enemy*> enemies, dead_enemies;
-Player* player;
+std::deque<Person*> friends;
 
 //Enemy
 
@@ -36,6 +36,12 @@ void Enemy::kill()
 Player::Player() : Person(0,0, 1,100, "Player")
 {
     player = true;
+    friends.push_back(this);
+}
+
+Player::~Player()
+{
+    remove_it(&friends,(Person*)this);
 }
 
 void Player::update()
@@ -56,5 +62,5 @@ void Player::update()
 void Player::shoot(int x, int y)
 {
     int dx = x-pos[0], dy = y-pos[1], sum = abs(dx)+abs(dy);
-    new Melee(this); //new Bullet(this, 5.*dx/sum, 5.*dy/sum);
+    new Laser(this,x,y);//Melee(this); //new Bullet(this, 5.*dx/sum, 5.*dy/sum);
 }

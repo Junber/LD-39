@@ -21,4 +21,14 @@ public:
     void render();
 };
 
+class Laser: public Base_bullet
+{
+public:
+    int end[2];
+
+    Laser(Person* shooter, int end_x, int end_y);
+    void render();
+    bool collides(Object* o);
+};
+
 #endif // _BULLET

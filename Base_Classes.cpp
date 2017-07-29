@@ -1,6 +1,8 @@
 #include "Base_Classes.h"
+
 #include "Loading.h"
 #include "Subpersons.h"
+#include <iostream>
 
 std::deque<Object*> objects, to_delete;
 
@@ -59,6 +61,7 @@ void Person::attack(Person* attacker)
 {
     lifepower -= 10;
     attacker->lifepower += 5;
+    std::cout << "ow\n";
 }
 
 //Base_bullet
@@ -83,10 +86,13 @@ void Base_bullet::update()
 
     if (enemy)
     {
-        if (collides(player))
+        for (Person* f: friends)
         {
-            player->attack(shot_by);
-            to_delete.push_back(this);
+            if (collides(f))
+            {
+                f->attack(shot_by);
+                to_delete.push_back(this);
+            }
         }
     }
     else

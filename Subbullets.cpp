@@ -39,3 +39,25 @@ void Melee::render()
 {
     circleRGBA(renderer,pos[0],pos[1],hitbox_size,255,255,255,255);
 }
+
+//Laser
+
+Laser::Laser(Person* shooter, int end_x, int end_y) : Base_bullet(shooter)
+{
+    end[0] = end_x;
+    end[1] = end_y;
+}
+
+void Laser::render()
+{
+    SDL_SetRenderDrawColor(renderer,enemy*255,(!enemy)*255,0,255);
+    SDL_RenderDrawLine(renderer, pos[0], pos[1], end[0], end[1]);
+}
+
+bool Laser::collides(Object* o)
+{
+    int a =  std::pow(pos[0]-end[0],2)         +  std::pow(pos[1]-end[1],2), //make constant if lasers dont move
+    b = 2* ((pos[0]-end[0])*(pos[0]-o->pos[0]) + (pos[1]-end[1])*(pos[1]-o->pos[1])),
+    c =      std::pow(pos[0]-o->pos[0],2)      +  std::pow(pos[1]-o->pos[1],2) - std::pow(o->hitbox_size,2); //add hitbox_size to o->hitbox_size if laser is thicker
+    return (b*b-4*a*c) >= 0;
+}

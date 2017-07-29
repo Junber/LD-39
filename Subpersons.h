@@ -5,6 +5,7 @@
 
 class Enemy: public Person
 {
+public:
     bool dead;
     std::string dead_tex;
 
@@ -18,11 +19,18 @@ class Player: public Person
 {
 public:
     Player();
+    ~Player();
     void update();
     void shoot(int x, int y);
 };
 
+/*class NPC: public Person
+{
+public:
+
+};*/
+
 extern std::deque<Enemy*> enemies, dead_enemies;
-extern Player* player;
+extern std::deque<Person*> friends;
 
 #endif // _SUBPERSONS

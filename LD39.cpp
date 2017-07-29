@@ -30,7 +30,10 @@ int main(int argc, char* args[])
 
     init_window();
 
+    Player* player;
     player = new Player();
+
+    new Enemy(50,50,5,100,"Enemy");
 
     //SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
     SDL_Event e;
