@@ -46,7 +46,7 @@ Player::Player() : Person(0,0, 3,100, "Player")
     player = true;
     friends.push_back(this);
 
-    age = overpowered;
+    age = squaregun;//overpowered;
     hitbox_size = 1;
 }
 
@@ -90,8 +90,13 @@ void Player::shoot(int x, int y)
     case life_drain:
         new Bullet(this, 5.*dx/sum, 5.*dy/sum);
         break;
-    case shotgun:
-        //...
+    case squaregun:
+        new Bullet(this, 10.*dx/sum, 10.*dy/sum);
+        for (int i=-1;i<=1;i++)
+        {
+            for (int u=-1;u<=1;u++) new Bullet(this, 10.*dx/sum+i, 10.*dy/sum+u);
+        }
+        break;
     case pistol:
         new Bullet(this, 10.*dx/sum, 10.*dy/sum);
         break;
@@ -108,7 +113,7 @@ void Player::kill()
     age=static_cast<Ages>(age+1);
     lifepower=100;
 
-    if (age>=shotgun) life_draining = false;
+    if (age>=squaregun) life_draining = false;
 
     if (age>=dead)
     {

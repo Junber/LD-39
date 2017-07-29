@@ -17,7 +17,7 @@ public:
 
 enum Ages
 {
-    overpowered=0,laser,life_drain,shotgun,pistol,cane,dead
+    overpowered=0,laser,life_drain,squaregun,pistol,cane,dead
 };
 
 class Player: public Person
