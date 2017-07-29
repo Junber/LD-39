@@ -1,8 +1,9 @@
 #include "Subpersons.h"
 
-#include "Bullet.h"
+#include "Subbullets.h"
+#include "Loading.h"
 
-std::deque<Enemy*> enemies;
+std::deque<Enemy*> enemies, dead_enemies;
 Player* player;
 
 //Enemy
@@ -10,12 +11,24 @@ Player* player;
 Enemy::Enemy(int x, int y, int hitbox, int life, std::string s): Person(x, y, hitbox, life, s)
 {
     player = false;
+    dead = false;
     enemies.push_back(this);
+
+    dead_tex = s+"_dead";
 }
 
 Enemy::~Enemy()
 {
+    if (dead) remove_it(&dead_enemies, this);
+    else remove_it(&enemies, this);
+}
+
+void Enemy::kill()
+{
     remove_it(&enemies, this);
+    dead_enemies.push_back(this);
+    dead = true;
+    tex = load_image(dead_tex);
 }
 
 //Player
@@ -43,5 +56,5 @@ void Player::update()
 void Player::shoot(int x, int y)
 {
     int dx = x-pos[0], dy = y-pos[1], sum = abs(dx)+abs(dy);
-    new Bullet(this, 5*dx/sum, 5*dy/sum);
+    new Melee(this); //new Bullet(this, 5.*dx/sum, 5.*dy/sum);
 }

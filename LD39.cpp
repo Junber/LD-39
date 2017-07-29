@@ -1,11 +1,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
-#include <SDL2_gfxPrimitives.h>
 #include <deque>
 #include <map>
 #include <string>
-#include <algorithm>
-#include <math.h>
 #include <iostream>
 
 #include "Loading.h"
@@ -50,7 +47,7 @@ int main(int argc, char* args[])
             }
         }
 
-        SDL_SetRenderDrawColor(renderer,255,255,255,255);
+        SDL_SetRenderDrawColor(renderer,155,155,155,255);
         SDL_RenderClear(renderer);
 
         for (Object* o: objects)
@@ -58,6 +55,9 @@ int main(int argc, char* args[])
             o->update();
             o->render();
         }
+
+        for (Object* o: to_delete) delete o;
+        to_delete.clear();
 
         SDL_RenderPresent(renderer);
         limit_fps();
