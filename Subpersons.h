@@ -15,13 +15,21 @@ public:
     void kill();
 };
 
+enum Ages
+{
+    overpowered=0,laser,life_drain,shotgun,pistol,cane,dead
+};
+
 class Player: public Person
 {
 public:
+    Ages age;
+
     Player();
     ~Player();
     void update();
     void shoot(int x, int y);
+    void kill();
 };
 
 /*class NPC: public Person

@@ -61,6 +61,8 @@ void Person::attack(Person* attacker)
 {
     lifepower -= 10;
     attacker->lifepower += 5;
+
+    if (lifepower < 0) kill();
     std::cout << "ow\n";
 }
 

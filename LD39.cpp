@@ -13,8 +13,6 @@
 void *__gxx_personality_v0;
 #endif
 
-bool breakk = false;
-
 int last_time;
 float wait;
 void limit_fps()

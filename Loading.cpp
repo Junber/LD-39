@@ -7,6 +7,7 @@ const int window[2] = {500,500};
 
 SDL_Window* renderwindow;
 SDL_Renderer* renderer;
+bool breakk = false;
 
 std::map<std::string,SDL_Texture*> loaded_textures;
 SDL_Texture* load_image(std::string s)

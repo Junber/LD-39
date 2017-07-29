@@ -5,6 +5,7 @@
 #include <string>
 
 extern SDL_Renderer* renderer;
+extern bool breakk;
 
 SDL_Texture* load_image(std::string s);
 void init_window();
