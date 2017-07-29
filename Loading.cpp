@@ -12,7 +12,27 @@ bool breakk = false;
 std::map<std::string,SDL_Texture*> loaded_textures;
 SDL_Texture* load_image(std::string s)
 {
-    if (!loaded_textures.count(s)) loaded_textures[s] = IMG_LoadTexture(renderer,("Data\\Graphics\\"+s+".png").c_str());
+    if (!loaded_textures.count(s))
+    {
+        loaded_textures[s] = IMG_LoadTexture(renderer,("Data\\Graphics\\"+s+".png").c_str());
+        Uint32 format;
+        int w, h;
+        SDL_QueryTexture(loaded_textures[s],&format,nullptr,&w,&h);
+        loaded_textures[s+"_white"] = SDL_CreateTexture(renderer,format,SDL_TEXTUREACCESS_TARGET,w,h);
+
+        SDL_SetRenderTarget(renderer,loaded_textures[s+"_white"]);
+        SDL_SetTextureBlendMode(loaded_textures[s+"_white"], SDL_BLENDMODE_NONE);
+        SDL_RenderCopy(renderer,loaded_textures[s],nullptr,nullptr);
+
+        SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_ADD);
+        SDL_SetRenderDrawColor(renderer,255,255,255,255);
+        SDL_Rect r = {0,0,w,h};
+        SDL_RenderFillRect(renderer,&r);
+
+        SDL_SetRenderTarget(renderer,nullptr);
+        SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
+        SDL_SetTextureBlendMode(loaded_textures[s+"_white"], SDL_BLENDMODE_BLEND);
+    }
 
     return loaded_textures[s];
 }

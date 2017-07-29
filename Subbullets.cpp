@@ -3,6 +3,7 @@
 #include "Subpersons.h"
 #include "Loading.h"
 #include "SDL2_gfxPrimitives.h"
+#include <iostream>
 
 
 //Bullet
@@ -63,6 +64,8 @@ bool Laser::collides(Object* o)
     int a =  std::pow(pos[0]-end[0],2)         +  std::pow(pos[1]-end[1],2), //make constant if lasers dont move
     b = 2* ((pos[0]-end[0])*(pos[0]-o->pos[0]) + (pos[1]-end[1])*(pos[1]-o->pos[1])),
     c =      std::pow(pos[0]-o->pos[0],2)      +  std::pow(pos[1]-o->pos[1],2) - std::pow(o->hitbox_size,2); //add hitbox_size to o->hitbox_size if laser is thicker
+
+    if ((b*b-4*a*c) >= 0) std::cout << o->pos[0] << " " << o->pos[1] << "\n";
     return (b*b-4*a*c) >= 0;
 }
 

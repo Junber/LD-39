@@ -15,6 +15,7 @@ Object::Object(int x, int y, int hitbox, std::string s)
     pos[1] = y;
 
     rotation = 0;
+    iframes=0;
 
     obstacle_hitbox = hitbox_size = hitbox;
 
@@ -26,6 +27,8 @@ Object::Object(int x, int y, int hitbox, std::string s)
     else
     {
         tex = load_image(s);
+        //SDL_SetTextureColorMod(tex,255,0,0);
+        itex = load_image(s+"_white");
         SDL_QueryTexture(tex, nullptr, nullptr, &render_size[0], &render_size[1]);
     }
 
@@ -42,7 +45,7 @@ void Object::render()
     SDL_Rect dest={pos[0]-render_size[0]/2, pos[1]-render_size[1]/2, render_size[0], render_size[1]},
              src ={get_anim_type()*render_size[0],get_anim_frame()*render_size[1],render_size[0], render_size[1]};
 
-    SDL_RenderCopyEx(renderer, tex, &src, &dest, rotation, nullptr, SDL_FLIP_NONE);
+    SDL_RenderCopyEx(renderer, iframes>0?itex:tex, &src, &dest, rotation, nullptr, SDL_FLIP_NONE);
 }
 
 bool Object::collides(Object* with)
@@ -75,11 +78,16 @@ Person::Person(int x, int y, int hitbox, int life, int cooldown, std::string s) 
 
 void Person::attack(Person* attacker)
 {
-    lifepower -= 10;
-    if (attacker->life_draining) attacker->lifepower += 5;
+    if (iframes<=0)
+    {
+        lifepower -= 10;
+        if (attacker->life_draining) attacker->lifepower += 5;
 
-    if (lifepower < 0) kill();
-    std::cout << "ow" << lifepower << "\n";
+        if (lifepower < 0) kill();
+        std::cout << "ow" << lifepower << "\n";
+
+        iframes = 10;
+    }
 }
 
 //Base_bullet

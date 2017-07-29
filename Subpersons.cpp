@@ -31,10 +31,15 @@ void Enemy::kill()
     dead_enemies.push_back(this);
     dead = true;
     tex = load_image(dead_tex);
+    iframes = 0;
 }
 
 void Enemy::update()
 {
+    if (dead) return;
+
+    if (iframes>0) iframes--;
+
     for (Obstacle* o: obstacles)
     {
         if (o->collides(this)) o->push_away(this);
@@ -43,7 +48,7 @@ void Enemy::update()
 
 //Player
 
-Player::Player() : Person(0,0, 3,100, 60, "Player")
+Player::Player() : Person(0,0, 3,100, 10, "Player")
 {
     player = true;
     speed = 1;
@@ -89,8 +94,8 @@ void Player::update()
     rotation = std::atan2(y-pos[1],x-pos[0])*180/M_PI;
 
     if (moving) cur_anim_frame++;
-
     if (cur_cooldown>0) cur_cooldown--;
+    if (iframes>0) iframes--;
 
     for (Obstacle* o: obstacles)
     {
@@ -209,6 +214,8 @@ int sign (int x)
 const int circle_radius = 50;
 void NPC::update()
 {
+    if (dead) return;
+
     Person* run_from = nullptr;
     for (Person* p: enemies)
     {
@@ -268,4 +275,5 @@ void NPC::kill()
     dead_friends.push_back(this);
     dead = true;
     tex = load_image(dead_tex);
+    iframes = 0;
 }
