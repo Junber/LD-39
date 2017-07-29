@@ -47,6 +47,7 @@ public:
     Base_bullet(Person* shooter);
     void update();
     virtual void move() {};
+    bool check_hit(Person* p); //returns true if the scan for further hits should be stopped
 };
 
 extern std::deque<Object*> objects, to_delete;

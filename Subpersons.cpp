@@ -4,7 +4,8 @@
 #include "Loading.h"
 #include "Obstacles.h"
 
-std::deque<Person*> enemies, dead_enemies, friends;
+std::deque<Person*> enemies, dead_enemies, friends, dead_friends;
+Player* player;
 
 //Enemy
 
@@ -44,15 +45,9 @@ void Enemy::update()
 Player::Player() : Person(0,0, 3,100, "Player")
 {
     player = true;
-    friends.push_back(this);
 
     age = squaregun;//overpowered;
     hitbox_size = 1;
-}
-
-Player::~Player()
-{
-    remove_it(&friends,(Person*)this);
 }
 
 void Player::update()
@@ -134,4 +129,34 @@ void Player::kill()
 
         breakk = true;
     }
+}
+
+//NPC
+
+NPC::NPC(int x, int y, int hitbox, std::string s) : Person(x, y, hitbox, 1, s)
+{
+    player = false;
+    dead = false;
+    friends.push_back(this);
+
+    dead_tex = s+"_dead";
+}
+
+NPC::~NPC()
+{
+    if (dead) remove_it(&dead_friends, (Person*) this);
+    else remove_it(&friends, (Person*) this);
+}
+
+void NPC::update()
+{
+
+}
+
+void NPC::kill()
+{
+    remove_it(&friends, (Person*) this);
+    dead_friends.push_back(this);
+    dead = true;
+    tex = load_image(dead_tex);
 }

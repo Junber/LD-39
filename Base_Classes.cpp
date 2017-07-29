@@ -66,7 +66,7 @@ void Person::attack(Person* attacker)
     if (attacker->life_draining) attacker->lifepower += 5;
 
     if (lifepower < 0) kill();
-    std::cout << "ow\n";
+    std::cout << "ow" << lifepower << "\n";
 }
 
 //Base_bullet
@@ -84,6 +84,23 @@ Base_bullet::Base_bullet(Person* shooter) : Object(shooter->pos[0], shooter->pos
     accurate_pos[1] = pos[1];
 }
 
+bool Base_bullet::check_hit(Person* p)
+{
+    if (collides(p))
+    {
+        if (instant_kill) p->kill();
+        else p->attack(shot_by);
+
+        if(remove_on_impact)
+        {
+            to_delete.push_back(this);
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void Base_bullet::update()
 {
     move();
@@ -99,17 +116,21 @@ void Base_bullet::update()
         }
     }
 
-    for (Person* f: enemy?friends:enemies)
+    bool stop = false;
+    for (Person* f: friends)
     {
-        if (collides(f))
-        {
-            if (instant_kill) f->kill();
-            else f->attack(shot_by);
+        stop = check_hit(f);
+        if (stop) break;
+    }
 
-            if(remove_on_impact)
+    if (!stop)
+    {
+        if (enemy) check_hit(player);
+        else
+        {
+            for (Person* e: enemies)
             {
-                to_delete.push_back(this);
-                break;
+                if (check_hit(e)) break;
             }
         }
     }
