@@ -2,6 +2,7 @@
 
 #include "Subbullets.h"
 #include "Loading.h"
+#include "Obstacles.h"
 
 std::deque<Person*> enemies, dead_enemies, friends;
 
@@ -30,14 +31,23 @@ void Enemy::kill()
     tex = load_image(dead_tex);
 }
 
+void Enemy::update()
+{
+    for (Obstacle* o: obstacles)
+    {
+        if (o->collides(this)) o->push_away(this);
+    }
+}
+
 //Player
 
-Player::Player() : Person(0,0, 1,100, "Player")
+Player::Player() : Person(0,0, 3,100, "Player")
 {
     player = true;
     friends.push_back(this);
 
     age = overpowered;
+    hitbox_size = 1;
 }
 
 Player::~Player()
@@ -58,6 +68,11 @@ void Player::update()
     SDL_GetMouseState(&x,&y);
 
     rotation = std::atan2(y-pos[1],x-pos[0])*180/M_PI+90;
+
+    for (Obstacle* o: obstacles)
+    {
+        if (o->collides(this)) o->push_away(this);
+    }
 }
 
 void Player::shoot(int x, int y)

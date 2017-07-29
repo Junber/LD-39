@@ -11,7 +11,7 @@ public:
 
     Enemy(int x, int y, int hitbox, int life, std::string s);
     ~Enemy();
-
+    void update();
     void kill();
 };
 

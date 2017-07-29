@@ -8,6 +8,7 @@
 #include "Loading.h"
 #include "Base_Classes.h"
 #include "Subpersons.h"
+#include "Obstacles.h"
 
 #ifndef _STATIC
 void *__gxx_personality_v0;
@@ -31,7 +32,7 @@ int main(int argc, char* args[])
     Player* player;
     player = new Player();
 
-    new Enemy(50,50,5,100,"Enemy");
+    new Obstacle(50,50,5,"Enemy");
 
     //SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
     SDL_Event e;

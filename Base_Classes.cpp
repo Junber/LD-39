@@ -2,6 +2,7 @@
 
 #include "Loading.h"
 #include "Subpersons.h"
+#include "Obstacles.h"
 #include <iostream>
 
 std::deque<Object*> objects, to_delete;
@@ -15,7 +16,7 @@ Object::Object(int x, int y, int hitbox, std::string s)
 
     rotation = 0;
 
-    hitbox_size = hitbox;
+    obstacle_hitbox = hitbox_size = hitbox;
 
     if (s.empty())
     {
@@ -89,6 +90,14 @@ void Base_bullet::update()
 
     pos[0] = accurate_pos[0];
     pos[1] = accurate_pos[1];
+
+    if (remove_on_impact)
+    {
+        for (Obstacle* o: obstacles)
+        {
+            if (o->collides(this)) to_delete.push_back(this);
+        }
+    }
 
     for (Person* f: enemy?friends:enemies)
     {
