@@ -8,15 +8,14 @@
 #include <math.h>
 #include <iostream>
 
+#include "Loading.h"
+#include "Base_Classes.h"
+
 #ifndef _STATIC
 void *__gxx_personality_v0;
 #endif
 
-const int window[2] = {500,500};
-
 bool breakk = false;
-SDL_Window* renderwindow;
-SDL_Renderer* renderer;
 
 class Player;
 Player* player;
@@ -31,69 +30,6 @@ void limit_fps()
     if (wait>0) SDL_Delay(wait);
     last_time = SDL_GetTicks();
 }
-
-template<class t> void remove_it(std::deque<t>* base, t thing)
-{
-    base->erase( std::remove( std::begin(*base), std::end(*base), thing ), std::end(*base) );
-}
-
-std::map<std::string,SDL_Texture*> loaded_textures;
-SDL_Texture* load_image(std::string s)
-{
-    if (!loaded_textures.count(s)) loaded_textures[s] = IMG_LoadTexture(renderer,("Data\\Graphics\\"+s+".png").c_str());
-
-    return loaded_textures[s];
-}
-
-class Object;
-std::deque<Object*> objects;
-class Object
-{
-public:
-    int pos[2], render_size[2], hitbox_size;
-    double rotation;
-    SDL_Texture* tex;
-
-    Object(int x, int y, int hitbox, std::string s)
-    {
-        pos[0] = x;
-        pos[1] = y;
-
-        rotation = 0;
-
-        hitbox_size = hitbox;
-
-        if (s.empty())
-        {
-            tex = nullptr;
-            render_size[0] = render_size[1] = 0;
-        }
-        else
-        {
-            tex = load_image(s);
-            SDL_QueryTexture(tex, nullptr, nullptr, &render_size[0], &render_size[1]);
-        }
-
-        objects.push_back(this);
-    }
-
-    virtual ~Object()
-    {
-        remove_it(&objects, this);
-    }
-
-    virtual void update()
-    {
-
-    }
-
-    virtual void render()
-    {
-        SDL_Rect r={pos[0]-render_size[0]/2, pos[1]-render_size[1]/2, render_size[0], render_size[1]};
-
-        SDL_RenderCopyEx(renderer, tex, nullptr, &r, rotation, nullptr, SDL_FLIP_NONE);
-    }
-};
 
 class Person: public Object
 {
@@ -210,8 +146,7 @@ int main(int argc, char* args[])
 {
     IMG_Init(IMG_INIT_PNG);
 
-    renderwindow = SDL_CreateWindow("LD-39", 50, 50, window[0], window[1], SDL_WINDOW_SHOWN);
-    renderer = SDL_CreateRenderer(renderwindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    init_window();
 
     player = new Player();
 
