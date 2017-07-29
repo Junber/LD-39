@@ -46,8 +46,13 @@ void Enemy::update()
 Player::Player() : Person(0,0, 3,100, 60, "Player")
 {
     player = true;
+    speed = 1;
 
-    age = squaregun;//overpowered;
+    cur_anim_frame = 0;
+
+    render_size[0] = render_size[1] = 32;
+
+    age = laser;//overpowered;
     hitbox_size = 1;
 }
 
@@ -55,15 +60,35 @@ void Player::update()
 {
     auto state = SDL_GetKeyboardState(nullptr);
 
-    if (state[SDL_SCANCODE_D]) pos[0]++;
-    else if (state[SDL_SCANCODE_A]) pos[0]--;
-    if (state[SDL_SCANCODE_S]) pos[1]++;
-    else if (state[SDL_SCANCODE_W]) pos[1]--;
+    bool moving = false;
+
+    if (state[SDL_SCANCODE_D])
+    {
+        pos[0] += speed;
+        moving = true;
+    }
+    else if (state[SDL_SCANCODE_A])
+    {
+        pos[0] -= speed;
+        moving = true;
+    }
+    if (state[SDL_SCANCODE_S])
+    {
+        pos[1] += speed;
+        moving = true;
+    }
+    else if (state[SDL_SCANCODE_W])
+    {
+        pos[1] -= speed;
+        moving = true;
+    }
 
     int x, y;
     SDL_GetMouseState(&x,&y);
 
-    rotation = std::atan2(y-pos[1],x-pos[0])*180/M_PI+90;
+    rotation = std::atan2(y-pos[1],x-pos[0])*180/M_PI;
+
+    if (moving) cur_anim_frame++;
 
     if (cur_cooldown>0) cur_cooldown--;
 
@@ -137,6 +162,24 @@ void Player::kill()
 
         breakk = true;
     }
+}
+
+int Player::get_anim_frame()
+{
+    cur_anim_frame %= 50/speed;
+
+    if (cur_anim_frame < 15/speed) return 0;
+    else if (cur_anim_frame < 25/speed) return 1;
+    else if (cur_anim_frame < 40/speed) return 2;
+    else if (cur_anim_frame < 50/speed) return 1;
+
+    return 0; //shouldn't happen
+}
+
+int Player::get_anim_type()
+{
+    if (cur_cooldown < 3*max_cooldown/4) return 0;
+    else return 1;
 }
 
 //NPC

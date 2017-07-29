@@ -24,11 +24,14 @@ class Player: public Person
 {
 public:
     Ages age;
+    int speed, cur_anim_frame;
 
     Player();
     void update();
     void shoot(int x, int y);
     void kill();
+    int get_anim_frame();
+    int get_anim_type();
 };
 
 class NPC: public Person

@@ -23,6 +23,8 @@ public:
     virtual ~Object();
     virtual void update() {};
     virtual void render();
+    virtual int get_anim_frame();
+    virtual int get_anim_type();
 };
 
 class Person: public Object

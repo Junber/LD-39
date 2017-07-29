@@ -39,14 +39,25 @@ Object::~Object()
 
 void Object::render()
 {
-    SDL_Rect r={pos[0]-render_size[0]/2, pos[1]-render_size[1]/2, render_size[0], render_size[1]};
+    SDL_Rect dest={pos[0]-render_size[0]/2, pos[1]-render_size[1]/2, render_size[0], render_size[1]},
+             src ={get_anim_type()*render_size[0],get_anim_frame()*render_size[1],render_size[0], render_size[1]};
 
-    SDL_RenderCopyEx(renderer, tex, nullptr, &r, rotation, nullptr, SDL_FLIP_NONE);
+    SDL_RenderCopyEx(renderer, tex, &src, &dest, rotation, nullptr, SDL_FLIP_NONE);
 }
 
 bool Object::collides(Object* with)
 {
     return (std::pow(pos[0]-with->pos[0],2) + std::pow(pos[1]-with->pos[1],2) < std::pow(hitbox_size+with->hitbox_size,2));
+}
+
+int Object::get_anim_frame()
+{
+    return 0;
+}
+
+int Object::get_anim_type()
+{
+    return 0;
 }
 
 //Person
@@ -55,7 +66,7 @@ Person::Person(int x, int y, int hitbox, int life, int cooldown, std::string s) 
 {
     lifepower = life;
     bullet_size=5;
-    bullet_range=60;
+    bullet_range=10;
 
     cur_cooldown = max_cooldown = cooldown;
 
