@@ -61,12 +61,34 @@ void Laser::render()
 
 bool Laser::collides(Object* o)
 {
-    int a =  std::pow(pos[0]-end[0],2)         +  std::pow(pos[1]-end[1],2), //make constant if lasers dont move
-    b = 2* ((pos[0]-end[0])*(pos[0]-o->pos[0]) + (pos[1]-end[1])*(pos[1]-o->pos[1])),
-    c =      std::pow(pos[0]-o->pos[0],2)      +  std::pow(pos[1]-o->pos[1],2) - std::pow(o->hitbox_size,2); //add hitbox_size to o->hitbox_size if laser is thicker
+    /*int d[2] = {pos[0]-end[0],    pos[1]-end[1]},
+        f[2] = {end[0]-o->pos[0], end[1]-o->pos[1]};
 
-    if ((b*b-4*a*c) >= 0) std::cout << o->pos[0] << " " << o->pos[1] << "\n";
-    return (b*b-4*a*c) >= 0;
+    int a = d[0]*d[0] + d[1]*d[1], //make constant if lasers dont move
+    b = 2* (d[0]*f[0] + d[1]*f[1]),
+    c =     f[0]*f[0] + f[1]*f[1] - std::pow(o->hitbox_size,2), //add hitbox_size to o->hitbox_size if laser is thicker
+    dis = (b*b-4*a*c);
+
+    if (dis >= 0)
+    {
+        float sqrt_dis = std::sqrt(dis);
+
+        if (((-b - sqrt_dis)/(2*a)) >= 0 && ((-b + sqrt_dis)/(2*a)) <= 1)
+        {
+            std::cout << d[0] << " " << d[1] << " " << a << " " << f[0] << " " << f[1] << " " << c << " " << b << " " << dis << " " << o->pos[0] << " " << o->pos[1] << " " << o->hitbox_size << "\n";
+            return true;
+        }
+    }
+
+    return false;*/
+
+    int diff[2] = {o->pos[0]-pos[0],o->pos[1]-pos[1]},
+        n[2] = {-(pos[1]-end[1]), pos[0]-end[0]};
+    float len_n = std::sqrt(n[0]*n[0]+n[1]*n[1]),
+        n0[2] = {n[0]/len_n,n[1]/len_n},
+        d = abs(diff[0]*n0[0]+diff[1]*n0[1]);
+
+    return d <= o->hitbox_size; //add hitbox_size to o->hitbox_size if laser is thicker
 }
 
 //Shockwave
