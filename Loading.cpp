@@ -40,3 +40,12 @@ void init_window()
     renderwindow = SDL_CreateWindow("LD-39", 50, 50, window[0]*zoom, window[1]*zoom, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(renderwindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 }
+
+int last_time;
+float wait;
+void limit_fps()
+{
+    wait = (100.0/6)-(SDL_GetTicks() - last_time);
+    if (wait>0) SDL_Delay(wait);
+    last_time = SDL_GetTicks();
+}

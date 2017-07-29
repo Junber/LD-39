@@ -11,5 +11,6 @@ const int window[2] = {500,500};
 
 SDL_Texture* load_image(std::string s);
 void init_window();
+void limit_fps();
 
 #endif // _LOADING

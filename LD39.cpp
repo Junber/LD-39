@@ -14,15 +14,6 @@
 void *__gxx_personality_v0;
 #endif
 
-int last_time;
-float wait;
-void limit_fps()
-{
-    wait = (100.0/6)-(SDL_GetTicks() - last_time);
-    if (wait>0) SDL_Delay(wait);
-    last_time = SDL_GetTicks();
-}
-
 int main(int argc, char* args[])
 {
     IMG_Init(IMG_INIT_PNG);
@@ -69,7 +60,7 @@ int main(int argc, char* args[])
 
         if (bad_vision)
         {
-            SDL_SetRenderDrawColor(renderer,100,100,100,10);
+            SDL_SetRenderDrawColor(renderer,100,100,100,player->lifepower*5);
             SDL_Rect r = {0,0,window[0],window[1]};
             SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
             SDL_RenderFillRect(renderer,&r);

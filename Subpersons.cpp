@@ -176,10 +176,64 @@ void Player::kill()
 
     if (age>=dead)
     {
-        SDL_SetRenderDrawColor(renderer,255,0,0,255);
+        pos[0] += hitbox_offset;
+
+        SDL_SetRenderDrawColor(renderer,0,0,0,255);
         SDL_RenderClear(renderer);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(100);
+
+        SDL_Texture* death = load_image("death");
+        for (int i=0;i<80;i++)
+        {
+            SDL_SetRenderDrawColor(renderer,0,0,0,255);
+            SDL_RenderClear(renderer);
+            filledCircleRGBA(renderer,pos[0],pos[1],25,255,255,255,255);
+
+            SDL_Rect dest={pos[0]-32/2, pos[1]-32/2, 32, 32},
+             src ={0,32*(i/20),32, 32};
+
+            SDL_RenderCopy(renderer, death, &src, &dest);
+
+            SDL_RenderPresent(renderer);
+            limit_fps();
+
+            SDL_FlushEvents(0,-1);
+        }
+
+        SDL_Delay(100);
+        for (int i=0;i<=400;i++)
+        {
+            SDL_SetRenderDrawColor(renderer,0,0,0,255);
+            SDL_RenderClear(renderer);
+            filledCircleRGBA(renderer,pos[0],pos[1],25,255,255,255,255);
+
+            int offset = i/10;
+
+            filledCircleRGBA(renderer,pos[0],pos[1],std::min(offset/2,25),220,220,220,255);
+
+            SDL_Rect dest={pos[0]-32/2-offset/2, pos[1]-32/2-offset/2, 32+offset, 32+offset},
+             src ={0,32*3,32, 32};
+
+            SDL_RenderCopy(renderer, death, &src, &dest);
+
+            if (i >= 300)
+            {
+                int c = (400-i)*2.5;
+                SDL_SetRenderDrawColor(renderer,c,c,c,255);
+                SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_MOD);
+                SDL_Rect r = {0,0,window[0],window[1]};
+                SDL_RenderFillRect(renderer,&r);
+            }
+
+            SDL_RenderPresent(renderer);
+            limit_fps();
+
+            SDL_FlushEvents(0,-1);
+        }
 
         SDL_Event e;
+        SDL_FlushEvents(0,-1);
         bool breakkk=false;
         while (!breakkk)
         {
@@ -189,6 +243,11 @@ void Player::kill()
                 else if (e.type == SDL_KEYDOWN) breakkk = true;
                 else if (e.type == SDL_MOUSEBUTTONDOWN) breakkk = true;
             }
+
+            SDL_SetRenderDrawColor(renderer,0,0,0,255);
+            SDL_RenderClear(renderer);
+            SDL_RenderPresent(renderer);
+            limit_fps();
         }
 
         breakk = true;
