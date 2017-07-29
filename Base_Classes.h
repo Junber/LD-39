@@ -40,7 +40,7 @@ class Base_bullet: public Object
 {
 public:
     float accurate_pos[2];
-    bool enemy, remove_on_impact;
+    bool enemy, remove_on_impact, instant_kill;
     int lifetime;
     Person* shot_by;
 

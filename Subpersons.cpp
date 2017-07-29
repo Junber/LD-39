@@ -67,7 +67,8 @@ void Player::shoot(int x, int y)
     switch (age)
     {
     case overpowered:
-        //...
+        new Shockwave(this);
+        break;
     case laser:
         new Laser(this,x,y);
         break;

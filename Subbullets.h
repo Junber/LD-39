@@ -31,4 +31,12 @@ public:
     bool collides(Object* o);
 };
 
+class Shockwave: public Base_bullet
+{
+public:
+    Shockwave(Person* shooter);
+    void render();
+    void move();
+};
+
 #endif // _BULLET

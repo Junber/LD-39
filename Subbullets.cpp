@@ -65,3 +65,22 @@ bool Laser::collides(Object* o)
     c =      std::pow(pos[0]-o->pos[0],2)      +  std::pow(pos[1]-o->pos[1],2) - std::pow(o->hitbox_size,2); //add hitbox_size to o->hitbox_size if laser is thicker
     return (b*b-4*a*c) >= 0;
 }
+
+//Shockwave
+
+Shockwave::Shockwave(Person* shooter) : Base_bullet(shooter)
+{
+    remove_on_impact=false;
+    instant_kill=true;
+}
+
+void Shockwave::render()
+{
+    circleRGBA(renderer,pos[0],pos[1],hitbox_size,255,255,255,255);
+}
+
+void Shockwave::move()
+{
+    hitbox_size += 5;
+    lifetime = 10; //arbitrary number; makes shockwave last forever
+}

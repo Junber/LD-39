@@ -74,6 +74,7 @@ Base_bullet::Base_bullet(Person* shooter) : Object(shooter->pos[0], shooter->pos
 {
     shot_by = shooter;
     remove_on_impact = true;
+    instant_kill = false;
 
     enemy = !shot_by->player;
     lifetime = shot_by->bullet_range;
@@ -93,7 +94,9 @@ void Base_bullet::update()
     {
         if (collides(f))
         {
-            f->attack(shot_by);
+            if (instant_kill) f->kill();
+            else f->attack(shot_by);
+
             if(remove_on_impact)
             {
                 to_delete.push_back(this);
