@@ -29,7 +29,7 @@ class Person: public Object
 {
 public:
     int lifepower, bullet_size, bullet_range;
-    bool player;
+    bool player, life_draining;
 
     Person(int x, int y, int hitbox, int life, std::string s);
     void attack(Person* attacker);
@@ -40,7 +40,7 @@ class Base_bullet: public Object
 {
 public:
     float accurate_pos[2];
-    bool enemy;
+    bool enemy, remove_on_impact;
     int lifetime;
     Person* shot_by;
 

@@ -38,7 +38,6 @@ public:
 
 };*/
 
-extern std::deque<Enemy*> enemies, dead_enemies;
-extern std::deque<Person*> friends;
+extern std::deque<Person*> enemies, dead_enemies, friends;
 
 #endif // _SUBPERSONS

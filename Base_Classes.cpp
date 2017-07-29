@@ -55,12 +55,14 @@ Person::Person(int x, int y, int hitbox, int life, std::string s) : Object(x, y,
     lifepower = life;
     bullet_size=5;
     bullet_range=60;
+
+    life_draining = true;
 }
 
 void Person::attack(Person* attacker)
 {
     lifepower -= 10;
-    attacker->lifepower += 5;
+    if (attacker->life_draining) attacker->lifepower += 5;
 
     if (lifepower < 0) kill();
     std::cout << "ow\n";
@@ -71,6 +73,7 @@ void Person::attack(Person* attacker)
 Base_bullet::Base_bullet(Person* shooter) : Object(shooter->pos[0], shooter->pos[1], shooter->bullet_size, "")
 {
     shot_by = shooter;
+    remove_on_impact = true;
 
     enemy = !shot_by->player;
     lifetime = shot_by->bullet_range;
@@ -86,25 +89,15 @@ void Base_bullet::update()
     pos[0] = accurate_pos[0];
     pos[1] = accurate_pos[1];
 
-    if (enemy)
+    for (Person* f: enemy?friends:enemies)
     {
-        for (Person* f: friends)
+        if (collides(f))
         {
-            if (collides(f))
+            f->attack(shot_by);
+            if(remove_on_impact)
             {
-                f->attack(shot_by);
                 to_delete.push_back(this);
-            }
-        }
-    }
-    else
-    {
-        for (Enemy* e: enemies)
-        {
-            if (collides(e))
-            {
-                e->attack(shot_by);
-                to_delete.push_back(this);
+                break;
             }
         }
     }

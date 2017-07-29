@@ -3,8 +3,7 @@
 #include "Subbullets.h"
 #include "Loading.h"
 
-std::deque<Enemy*> enemies, dead_enemies;
-std::deque<Person*> friends;
+std::deque<Person*> enemies, dead_enemies, friends;
 
 //Enemy
 
@@ -19,13 +18,13 @@ Enemy::Enemy(int x, int y, int hitbox, int life, std::string s): Person(x, y, hi
 
 Enemy::~Enemy()
 {
-    if (dead) remove_it(&dead_enemies, this);
-    else remove_it(&enemies, this);
+    if (dead) remove_it(&dead_enemies, (Person*) this);
+    else remove_it(&enemies, (Person*) this);
 }
 
 void Enemy::kill()
 {
-    remove_it(&enemies, this);
+    remove_it(&enemies, (Person*) this);
     dead_enemies.push_back(this);
     dead = true;
     tex = load_image(dead_tex);
@@ -83,6 +82,8 @@ void Player::shoot(int x, int y)
     case cane:
         new Melee(this);
         break;
+    case dead:
+        break;
     }
 }
 
@@ -90,6 +91,8 @@ void Player::kill()
 {
     age=static_cast<Ages>(age+1);
     lifepower=100;
+
+    if (age>=shotgun) life_draining = false;
 
     if (age>=dead)
     {

@@ -27,7 +27,10 @@ void Bullet::render()
 
 //Melee
 
-Melee::Melee(Person* shooter) : Base_bullet(shooter) {}
+Melee::Melee(Person* shooter) : Base_bullet(shooter)
+{
+    remove_on_impact=false;
+}
 
 void Melee::move()
 {
@@ -46,6 +49,7 @@ Laser::Laser(Person* shooter, int end_x, int end_y) : Base_bullet(shooter)
 {
     end[0] = end_x;
     end[1] = end_y;
+    remove_on_impact=false;
 }
 
 void Laser::render()
