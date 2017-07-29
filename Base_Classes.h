@@ -14,7 +14,7 @@ template<class t> void remove_it(std::deque<t>* base, t thing)
 class Object
 {
 public:
-    int pos[2], render_size[2], hitbox_size;
+    int pos[2], render_size[2], hitbox_size, obstacle_hitbox;
     double rotation;
     SDL_Texture* tex;
 
