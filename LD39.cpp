@@ -10,17 +10,13 @@
 
 #include "Loading.h"
 #include "Base_Classes.h"
+#include "Subpersons.h"
 
 #ifndef _STATIC
 void *__gxx_personality_v0;
 #endif
 
 bool breakk = false;
-
-class Player;
-Player* player;
-class Enemy;
-std::deque<Enemy*> enemies;
 
 int last_time;
 float wait;
@@ -29,117 +25,6 @@ void limit_fps()
     wait = (100.0/6)-(SDL_GetTicks() - last_time);
     if (wait>0) SDL_Delay(wait);
     last_time = SDL_GetTicks();
-}
-
-class Person: public Object
-{
-public:
-    int lifepower, bullet_size;
-    bool player;
-
-    Person(int x, int y, int hitbox, int life, std::string s) : Object(x, y, hitbox, s)
-    {
-        lifepower = life;
-        bullet_size=5;
-    }
-
-    void attack(Person* attacker)
-    {
-        lifepower -= 10;
-        attacker->lifepower += 5;
-    }
-};
-
-class Enemy: public Person
-{
-    Enemy(int x, int y, int hitbox, int life, std::string s): Person(x, y, hitbox, life, s)
-    {
-        player = false;
-        enemies.push_back(this);
-    }
-
-    ~Enemy()
-    {
-        remove_it(&enemies, this);
-    }
-};
-
-class Player: public Person
-{
-public:
-    Player() : Person(0,0, 1,100, "Player")
-    {
-        player = true;
-    }
-
-    void update()
-    {
-        auto state = SDL_GetKeyboardState(nullptr);
-
-        if (state[SDL_SCANCODE_D]) pos[0]++;
-        else if (state[SDL_SCANCODE_A]) pos[0]--;
-        if (state[SDL_SCANCODE_S]) pos[1]++;
-        else if (state[SDL_SCANCODE_W]) pos[1]--;
-
-        int x, y;
-        SDL_GetMouseState(&x,&y);
-
-        rotation = std::atan2(y-pos[1],x-pos[0])*180/M_PI+90;
-    }
-
-    void shoot(int x, int y);
-};
-
-class Bullet: public Object
-{
-public:
-    int speed[2];
-    bool enemy;
-    Person* shot_by;
-
-    Bullet(Person* shooter, int s_x, int s_y) : Object(shooter->pos[0], shooter->pos[1], shooter->bullet_size, "")
-    {
-        shot_by = shooter;
-
-        enemy = !shot_by->player;
-        speed[0] = s_x;
-        speed[1] = s_y;
-    }
-
-    void update()
-    {
-        pos[0] += speed[0];
-        pos[1] += speed[1];
-
-        if (enemy)
-        {
-            if (collides(player)) player->attack(shot_by);
-        }
-        else
-        {
-            for (Enemy* e: enemies)
-            {
-                if (collides(e)) e->attack(shot_by);
-            }
-        }
-    }
-
-    bool collides(Object* with)
-    {
-        return (std::pow(pos[0]-with->pos[0],2) + std::pow(pos[1]-with->pos[1],2) < std::pow(hitbox_size+with->hitbox_size,2));
-    }
-
-    void render()
-    {
-        filledCircleRGBA(renderer,pos[0],pos[1],hitbox_size,enemy*255,(!enemy)*255,0,255);
-        circleRGBA(renderer,pos[0],pos[1],hitbox_size,0,0,0,255);
-    }
-};
-
-void Player::shoot(int x, int y)
-{
-    int dx = x-pos[0], dy = y-pos[1], sum = abs(dx)+abs(dy);
-    new Bullet(this, 5*dx/sum, 5*dy/sum);
 }
 
 int main(int argc, char* args[])

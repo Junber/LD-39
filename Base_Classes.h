@@ -26,4 +26,14 @@ public:
     virtual void render();
 };
 
+class Person: public Object
+{
+public:
+    int lifepower, bullet_size;
+    bool player;
+
+    Person(int x, int y, int hitbox, int life, std::string s);
+    void attack(Person* attacker);
+};
+
 #endif // _BASE_CLASSES
