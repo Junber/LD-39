@@ -46,11 +46,13 @@ Enemy_type* random_enemy_type()
 
 int main(int argc, char* args[])
 {
+    SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_EVENTS);
     IMG_Init(IMG_INIT_PNG);
     random_init();
 
     init_window();
     SDL_RenderSetScale(renderer,zoom,zoom);
+    SDL_Texture* bg = make_background();
 
     transition::transition = false;
 
@@ -84,13 +86,8 @@ int main(int argc, char* args[])
             }
         }
 
-        bool bad_vision = (player->age >= cane && player->lifepower < 25);
-
-        if (!bad_vision)
-        {
-            SDL_SetRenderDrawColor(renderer,155,155,155,255);
-            SDL_RenderClear(renderer);
-        }
+        SDL_Rect r = {camera[0],camera[1],window[0],window[1]};
+        SDL_RenderCopy(renderer,bg,&r,nullptr);
 
         if (transition::transition)
         {
@@ -146,14 +143,6 @@ int main(int argc, char* args[])
                 o->update();
                 o->render();
             }
-        }
-
-        if (bad_vision)
-        {
-            SDL_SetRenderDrawColor(renderer,100,100,100,player->lifepower*5);
-            SDL_Rect r = {0,0,window[0],window[1]};
-            SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
-            SDL_RenderFillRect(renderer,&r);
         }
 
         for (Object* o: to_delete) delete o;

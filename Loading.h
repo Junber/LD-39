@@ -21,7 +21,9 @@ const int map_size[2] = {700,700};
 
 SDL_Texture* load_image(std::string s);
 SDL_Texture* load_bullet_image(int size);
+SDL_Texture* make_background();
 void init_window();
 void limit_fps();
+int random(int x, int y);
 
 #endif // _LOADING

@@ -3,6 +3,7 @@
 #include <SDL_image.h>
 #include <map>
 #include <SDL2_gfxPrimitives.h>
+#include <iostream>
 
 SDL_Window* renderwindow;
 SDL_Renderer* renderer;
@@ -68,6 +69,30 @@ SDL_Texture* load_bullet_image(int size)
     }
 
     return bullet_textures[size];
+}
+
+SDL_Texture* make_background()
+{
+    SDL_Texture* bg = SDL_CreateTexture(renderer,SDL_PIXELFORMAT_RGBA8888,SDL_TEXTUREACCESS_TARGET,map_size[0],map_size[1]);
+
+    for (int i=1;i<=3;i++) load_image("dirt"+std::to_string(i));
+
+    SDL_SetRenderTarget(renderer,bg);
+    SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
+    SDL_SetTextureBlendMode(bg, SDL_BLENDMODE_BLEND);
+
+    for (int i=0; i<map_size[0]; i+=64)
+    {
+        for (int u=0; u<map_size[1]; u+=64)
+        {
+            SDL_Rect r = {i,u,64,64};
+            SDL_RenderCopy(renderer,load_image("dirt"+std::to_string(random(1,3))),nullptr,&r);
+        }
+    }
+
+    SDL_SetRenderTarget(renderer,nullptr);
+
+    return bg;
 }
 
 void init_window()
