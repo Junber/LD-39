@@ -23,7 +23,7 @@ int main(int argc, char* args[])
 
     player = new Player();
 
-    new Obstacle(50,50,5,"Enemy");
+    new Obstacle(50,50,25,"House");
     new Enemy(100,50,5,100,60,"Enemy");
     new Enemy(50,300,5,100,60,"Enemy");
     new NPC(100,60,5,"Enemy");

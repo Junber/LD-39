@@ -50,7 +50,7 @@ void Enemy::update()
 //Player
 
 const int hitbox_offset = 5;
-Player::Player() : Person(0,0, 3, 100,100, "age1")
+Player::Player() : Person(0,0, 15, 100,100, "age1")
 {
     player = true;
     speed = 1;
@@ -181,7 +181,7 @@ void Player::kill()
         SDL_SetRenderDrawColor(renderer,0,0,0,255);
         SDL_RenderClear(renderer);
         SDL_RenderPresent(renderer);
-        SDL_Delay(100);
+        SDL_Delay(500);
 
         SDL_Texture* death = load_image("death");
         for (int i=0;i<80;i++)
@@ -263,6 +263,7 @@ void Player::render()
     SDL_SetRenderDrawColor(renderer,255,255,255,255);
     SDL_RenderDrawPoint(renderer,pos[0],pos[1]);
     circleRGBA(renderer,pos[0],pos[1],hitbox_size,255,255,255,255);
+    circleRGBA(renderer,pos[0],pos[1],obstacle_hitbox,255,255,255,255);
 }
 
 int Player::get_anim_frame()
@@ -366,6 +367,11 @@ void NPC::update()
 
         real_pos[0] = pos[0];
         real_pos[1] = pos[1];
+    }
+
+    for (Obstacle* o: obstacles)
+    {
+        if (o->collides(this)) o->push_away(this);
     }
 }
 
