@@ -51,12 +51,15 @@ Laser::Laser(Person* shooter, int end_x, int end_y) : Base_bullet(shooter)
     end[0] = end_x;
     end[1] = end_y;
     remove_on_impact=false;
+    hitbox_size = 3;
 }
 
 void Laser::render()
 {
-    SDL_SetRenderDrawColor(renderer,enemy*255,(!enemy)*255,0,255);
-    SDL_RenderDrawLine(renderer, pos[0], pos[1], end[0], end[1]);
+    /*SDL_SetRenderDrawColor(renderer,enemy*255,(!enemy)*255,0,255);
+    SDL_RenderDrawLine(renderer, pos[0], pos[1], end[0], end[1]);*/
+
+    for (int i=2*hitbox_size+1; i>=1; i-=2) thickLineRGBA(renderer,pos[0], pos[1], end[0], end[1],i,enemy*255,(!enemy)*255,0,100);
 }
 
 bool Laser::collides(Object* o)
@@ -67,7 +70,7 @@ bool Laser::collides(Object* o)
         n0[2] = {n[0]/len_n,n[1]/len_n},
         d = abs(diff[0]*n0[0]+diff[1]*n0[1]);
 
-    return d <= o->hitbox_size; //add hitbox_size to o->hitbox_size if laser is thicker
+    return d <= o->hitbox_size+hitbox_size; //add hitbox_size to o->hitbox_size if laser is thicker
 }
 
 //Shockwave

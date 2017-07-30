@@ -304,10 +304,12 @@ int Player::get_anim_frame()
 
 int Player::get_anim_type()
 {
-    if (age==overpowered && cur_cooldown > 0) return 1;
-
-    if (age == squaregun || age == pistol || cur_cooldown < 3*max_cooldown/4) return 0;
-    else return 1;
+    if (age==overpowered || age == laser) return (cur_cooldown > 0);
+    else
+    {
+        if (age == squaregun || age == pistol || cur_cooldown < 3*max_cooldown/4) return 0;
+        else return 1;
+    }
 }
 
 //NPC
