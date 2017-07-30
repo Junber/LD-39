@@ -2,6 +2,7 @@
 
 #include <SDL_image.h>
 #include <map>
+#include <SDL2_gfxPrimitives.h>
 
 SDL_Window* renderwindow;
 SDL_Renderer* renderer;
@@ -34,6 +35,32 @@ SDL_Texture* load_image(std::string s)
     }
 
     return loaded_textures[s];
+}
+
+std::map<int,SDL_Texture*> bullet_textures;
+SDL_Texture* load_bullet_image(int size)
+{
+    if (!bullet_textures.count(size))
+    {
+        bullet_textures[size] = SDL_CreateTexture(renderer,SDL_PIXELFORMAT_RGBA8888,SDL_TEXTUREACCESS_TARGET,size*2+1,size*2+1);
+
+        SDL_SetRenderTarget(renderer,bullet_textures[size]);
+        SDL_SetTextureBlendMode(bullet_textures[size], SDL_BLENDMODE_NONE);
+        SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_NONE);
+        SDL_SetRenderDrawColor(renderer,0,0,0,0);
+        SDL_Rect r = {0,0,size*2+1,size*2+1};
+        SDL_RenderFillRect(renderer,&r);
+
+        SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
+        SDL_SetTextureBlendMode(bullet_textures[size], SDL_BLENDMODE_BLEND);
+
+        filledCircleRGBA(renderer,size,size,size,255,0,0,255);
+        circleRGBA(renderer,size,size,size,0,0,0,255);
+
+        SDL_SetRenderTarget(renderer,nullptr);
+    }
+
+    return bullet_textures[size];
 }
 
 void init_window()

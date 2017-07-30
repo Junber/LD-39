@@ -12,6 +12,8 @@ Bullet::Bullet(Person* shooter, float s_x, float s_y) : Base_bullet(shooter)
 {
     speed[0] = s_x;
     speed[1] = s_y;
+    tex = load_bullet_image(hitbox_size);
+    render_size[0] = render_size[1] = hitbox_size*2+1;
 }
 
 void Bullet::move()
@@ -25,8 +27,12 @@ void Bullet::render()
     if (pos[0]-camera[0] < -hitbox_size || pos[0]-camera[0] > window[0]+hitbox_size ||
         pos[1]-camera[1] < -hitbox_size || pos[1]-camera[1] > window[1]+hitbox_size) return;
 
-    filledCircleRGBA(renderer,pos[0]-camera[0],pos[1]-camera[1],hitbox_size,enemy*255,(!enemy)*255,0,255);
-    circleRGBA(renderer,pos[0]-camera[0],pos[1]-camera[1],hitbox_size,0,0,0,255);
+    if (enemy) Object::render();
+    else
+    {
+        filledCircleRGBA(renderer,pos[0]-camera[0],pos[1]-camera[1],hitbox_size,enemy*255,(!enemy)*255,0,255);
+        circleRGBA(renderer,pos[0]-camera[0],pos[1]-camera[1],hitbox_size,0,0,0,255);
+    }
 }
 
 //Melee
