@@ -20,7 +20,13 @@ Enemy::Enemy(int x, int y, int hitbox, std::string s, Enemy_type* typ): Person(x
     bullet_range = type->bullet_range;
     bullet_size = type->bullet_size;
 
+    render_size[0] = render_size[1] = 34;
+
+    cur_anim_frame=0;
+
     dead_tex = s+"_dead";
+
+    rotate_center = {15,18};
 }
 
 Enemy::~Enemy()
@@ -34,16 +40,23 @@ void Enemy::kill()
     remove_it(&enemies, (Person*) this);
     dead_enemies.push_back(this);
     dead = true;
-    tex = itex = load_image(dead_tex);
     iframes = 0;
+    cur_anim_frame = 0;
 }
 
 void Enemy::update()
 {
-    if (dead) return;
+    cur_anim_frame++;
+
+    if (dead)
+    {
+        if (cur_anim_frame > bullet_range*2) to_delete.push_back(this); //*2 actually not required but safety first
+        return;
+    }
 
     if (iframes>0) iframes--;
 
+    int last_pos[2] = {pos[0],pos[1]};
     int dx = player->pos[0]-pos[0], dy = player->pos[1]-pos[1], sum = abs(dx)+abs(dy);
 
     if (sum && (type->movement == walk_towards_player || (type->movement == keep_distance_from_player && dx*dx+dy*dy > bullet_range*bullet_range*2/3)))
@@ -111,6 +124,44 @@ void Enemy::update()
     {
         if (o->collides(this)) o->push_away(this);
     }
+
+    switch(get_anim_type())
+    {
+    case 0:
+        cur_anim_frame %= 120;
+        break;
+    case 1:
+        cur_anim_frame %= 80;
+        break;
+    case 2:
+        cur_anim_frame %= 30;
+        break;
+    }
+
+    if (last_pos[0] != pos[0] || last_pos[1] != pos[1]) rotation = std::atan2(pos[1]-last_pos[1],pos[0]-last_pos[0])*180/M_PI;
+    else rotation = std::atan2(player->pos[1]-pos[1],player->pos[0]-pos[0])*180/M_PI;
+}
+
+int Enemy::get_anim_frame()
+{
+    return (cur_anim_frame/10);
+    /*switch(get_anim_type())
+    {
+    case 0:
+        //...
+    case 1:
+
+        break;
+    case 2:
+
+    }*/
+}
+
+int Enemy::get_anim_type()
+{
+    if (dead) return 0;
+    else if (cur_cooldown < 3*max_cooldown/4) return 1;
+    else return 2;
 }
 
 //Player
@@ -235,6 +286,7 @@ void Player::kill()
 {
     age=static_cast<Ages>(age+1);
     lifepower=100;
+    cur_cooldown = 0;
 
     transition::transition = true;
     transition::tex = load_image("age"+std::to_string(age)+"-"+std::to_string(age+1));

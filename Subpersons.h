@@ -7,7 +7,7 @@ extern bool show_hitbox;
 
 enum Movements
 {
-    none=0,walk_towards_player,keep_distance_from_player,MOVEMENTS_NUM
+    none=0,walk_towards_player,keep_distance_from_player,dodge,MOVEMENTS_NUM
 };
 
 enum Weapons
@@ -21,12 +21,14 @@ struct Enemy_type
     int bullet_range, bullet_size, bullet_speed;
     Movements movement;
     Weapons weapon;
+    Enemy_type *younger=nullptr, *older=nullptr;
 };
 
 class Enemy: public Person
 {
 public:
     bool dead;
+    int cur_anim_frame;
     std::string dead_tex;
     Enemy_type* type;
 
@@ -34,6 +36,8 @@ public:
     ~Enemy();
     void update();
     void kill();
+    int get_anim_frame();
+    int get_anim_type();
 };
 
 enum Ages
