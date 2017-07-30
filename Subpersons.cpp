@@ -34,7 +34,7 @@ void Enemy::kill()
     remove_it(&enemies, (Person*) this);
     dead_enemies.push_back(this);
     dead = true;
-    tex = load_image(dead_tex);
+    tex = itex = load_image(dead_tex);
     iframes = 0;
 }
 
@@ -88,6 +88,22 @@ void Enemy::update()
                 //This means the bullet is to slow, so we just change the weapon altogether
                 type->weapon = alien_pistol;
                 cur_cooldown = 0;
+            }
+        }
+        else if (type->weapon == circlegun)
+        {
+            for (int i=0; i<=63; i+=5)
+            {
+                new Bullet(this,type->bullet_speed*(dx+std::sin(i/10)*50)/sum,type->bullet_speed*(dy+std::cos(i/10)*50)/sum);
+            }
+        }
+        else if (type->weapon == reverse_circlegun)
+        {
+            for (int i=0; i<=63; i+=5)
+            {
+                Bullet* b = new Bullet(this,type->bullet_speed*(dx-std::sin(i/10)*50)/sum,type->bullet_speed*(dy-std::cos(i/10)*50)/sum);
+                b->accurate_pos[0] += std::sin(i/10)*50;
+                b->accurate_pos[1] += std::cos(i/10)*50;
             }
         }
     }
@@ -163,7 +179,11 @@ void Player::update()
         else rotation = std::atan2(y-pos[1],x-pos[0])*180/M_PI;
     }
 
-
+    if (moving)
+    {
+        camera[0] = std::max(0, std::min(map_size[0]-window[0], pos[0]-window[0]/2));
+        camera[1] = std::max(0, std::min(map_size[1]-window[1], pos[1]-window[1]/2));
+    }
 
     if (moving || (age==cane && get_anim_type()==1)) cur_anim_frame++;
     if (cur_cooldown>0) cur_cooldown--;
@@ -320,9 +340,9 @@ void Player::render()
     if (show_hitbox)
     {
         SDL_SetRenderDrawColor(renderer,255,255,255,255);
-        SDL_RenderDrawPoint(renderer,pos[0],pos[1]);
-        circleRGBA(renderer,pos[0],pos[1],hitbox_size,255,255,255,255);
-        circleRGBA(renderer,pos[0],pos[1],obstacle_hitbox,255,255,255,255);
+        SDL_RenderDrawPoint(renderer,pos[0]-camera[0],pos[1]-camera[1]);
+        circleRGBA(renderer,pos[0]-camera[0],pos[1]-camera[1],hitbox_size,255,255,255,255);
+        circleRGBA(renderer,pos[0]-camera[0],pos[1]-camera[1],obstacle_hitbox,255,255,255,255);
     }
 }
 

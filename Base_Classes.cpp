@@ -44,7 +44,7 @@ Object::~Object()
 
 void Object::render()
 {
-    SDL_Rect dest={pos[0]-render_size[0]/2, pos[1]-render_size[1]/2, render_size[0], render_size[1]},
+    SDL_Rect dest={pos[0]-render_size[0]/2-camera[0], pos[1]-render_size[1]/2-camera[1], render_size[0], render_size[1]},
              src ={get_anim_type()*render_size[0],get_anim_frame()*render_size[1],render_size[0], render_size[1]};
 
     SDL_RenderCopyEx(renderer, iframes>0?itex:tex, &src, &dest, rotation, &rotate_center, SDL_FLIP_NONE);

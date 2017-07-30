@@ -12,7 +12,7 @@ enum Movements
 
 enum Weapons
 {
-    alien_pistol=0,smart_pistol,WEAPON_NUM
+    alien_pistol=0,smart_pistol,circlegun,reverse_circlegun,WEAPON_NUM
 };
 
 struct Enemy_type

@@ -6,6 +6,7 @@
 SDL_Window* renderwindow;
 SDL_Renderer* renderer;
 bool breakk = false;
+int camera[2] = {0,0};
 
 std::map<std::string,SDL_Texture*> loaded_textures;
 SDL_Texture* load_image(std::string s)

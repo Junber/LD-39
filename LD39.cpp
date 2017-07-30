@@ -38,7 +38,7 @@ Enemy_type* random_enemy_type()
     e->cooldown = random(30,60);
     e->life = random(10,40);
     e->movement = static_cast<Movements>(random(0,MOVEMENTS_NUM-1));
-    e->weapon = smart_pistol;//static_cast<Weapons>(random(0,WEAPON_NUM-1));
+    e->weapon = reverse_circlegun;//static_cast<Weapons>(random(0,WEAPON_NUM-1));
     e->speed = 2;//random(2,10);
 
     return e;
@@ -54,7 +54,7 @@ int main(int argc, char* args[])
     player = new Player();
 
     new Obstacle(50,50,25,"House");
-    for (int i=0; i<1; i++) new Enemy(random(50,window[0]),random(50,window[1]),5,"Enemy",random_enemy_type());
+    for (int i=0; i<5; i++) new Enemy(random(50,window[0]),random(50,window[1]),5,"Enemy",random_enemy_type());
     new NPC(200,200,5,"NPC");
 
     //SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);

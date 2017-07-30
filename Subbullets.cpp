@@ -22,8 +22,8 @@ void Bullet::move()
 
 void Bullet::render()
 {
-    filledCircleRGBA(renderer,pos[0],pos[1],hitbox_size,enemy*255,(!enemy)*255,0,255);
-    circleRGBA(renderer,pos[0],pos[1],hitbox_size,0,0,0,255);
+    filledCircleRGBA(renderer,pos[0]-camera[0],pos[1]-camera[1],hitbox_size,enemy*255,(!enemy)*255,0,255);
+    circleRGBA(renderer,pos[0]-camera[0],pos[1]-camera[1],hitbox_size,0,0,0,255);
 }
 
 //Melee
@@ -41,7 +41,7 @@ void Melee::move()
 
 void Melee::render()
 {
-    circleRGBA(renderer,pos[0],pos[1],hitbox_size,255,255,255,255);
+    circleRGBA(renderer,pos[0]-camera[0],pos[1]-camera[1],hitbox_size,255,255,255,255);
 }
 
 //Laser
@@ -56,10 +56,7 @@ Laser::Laser(Person* shooter, int end_x, int end_y) : Base_bullet(shooter)
 
 void Laser::render()
 {
-    /*SDL_SetRenderDrawColor(renderer,enemy*255,(!enemy)*255,0,255);
-    SDL_RenderDrawLine(renderer, pos[0], pos[1], end[0], end[1]);*/
-
-    for (int i=2*hitbox_size+1; i>=1; i-=2) thickLineRGBA(renderer,pos[0], pos[1], end[0], end[1],i,enemy*255,(!enemy)*255,0,100);
+    for (int i=2*hitbox_size+1; i>=1; i-=2) thickLineRGBA(renderer,pos[0]-camera[0], pos[1]-camera[1], end[0]-camera[0], end[1]-camera[1],i,enemy*255,(!enemy)*255,0,100);
 }
 
 bool Laser::collides(Object* o)
@@ -72,7 +69,7 @@ bool Laser::collides(Object* o)
 
     if (abs(d) <= o->hitbox_size+hitbox_size)
     {
-        int proj[2] = {o->pos[0]+d*n0[0], o->pos[1]+d*n0[1]};
+        int proj[2] = {int(o->pos[0]+d*n0[0]), int(o->pos[1]+d*n0[1])};
         return (proj[0] >= std::min(pos[0],end[0]) && proj[0] <= std::max(pos[0],end[0]) &&
                 proj[1] >= std::min(pos[1],end[1]) && proj[1] <= std::max(pos[1],end[1]));
     }
@@ -90,7 +87,7 @@ Shockwave::Shockwave(Person* shooter) : Base_bullet(shooter)
 
 void Shockwave::render()
 {
-    circleRGBA(renderer,pos[0],pos[1],hitbox_size,255,255,255,255);
+    circleRGBA(renderer,pos[0]-camera[0],pos[1]-camera[1],hitbox_size,255,255,255,255);
 }
 
 void Shockwave::move()
