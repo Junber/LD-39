@@ -52,9 +52,12 @@ void Object::render()
 
 bool Object::collides(Object* with)
 {
-    if (pos[0]-with->pos[0] + pos[1]-with->pos[1] > hitbox_size+with->hitbox_size) return false;
+    const int dx = abs(pos[0]-with->pos[0]),
+            dy = abs(pos[1]-with->pos[1]),
+            r = hitbox_size+with->hitbox_size;
 
-    return (std::pow(pos[0]-with->pos[0],2) + std::pow(pos[1]-with->pos[1],2) < std::pow(hitbox_size+with->hitbox_size,2));
+    if (dx > r || dy > r) return false;
+    return (dx*dx + dy*dy < r*r);
 }
 
 int Object::get_anim_frame()
