@@ -29,6 +29,7 @@ public:
     Laser(Person* shooter, int end_x, int end_y);
     void render();
     bool collides(Object* o);
+    void move();
 };
 
 class Shockwave: public Base_bullet

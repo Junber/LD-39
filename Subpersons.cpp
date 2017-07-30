@@ -146,8 +146,8 @@ void Player::update()
 
     int x, y;
     SDL_GetMouseState(&x,&y);
-    x /= zoom;
-    y /= zoom;
+    x = x/zoom+camera[0];
+    y = y/zoom+camera[1];
 
     if (!(age==overpowered && cur_cooldown > 0))
     {

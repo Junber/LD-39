@@ -34,7 +34,7 @@ Enemy_type* random_enemy_type()
     Enemy_type* e = new Enemy_type();
     e->bullet_range = random(50,300);
     e->bullet_size = random(5,30);
-    e->bullet_speed = 3;//random(1,10);
+    e->bullet_speed = random(1,5);
     e->cooldown = random(30,60);
     e->life = random(10,40);
     e->movement = static_cast<Movements>(random(0,MOVEMENTS_NUM-1));
@@ -74,7 +74,7 @@ int main(int argc, char* args[])
 
 			else if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT)
             {
-                player->shoot(e.button.x/zoom, e.button.y/zoom);
+                player->shoot(e.button.x/zoom+camera[0], e.button.y/zoom+camera[1]);
             }
         }
 
