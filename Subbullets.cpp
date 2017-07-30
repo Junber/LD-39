@@ -73,8 +73,8 @@ bool Laser::collides(Object* o)
     if (abs(d) <= o->hitbox_size+hitbox_size)
     {
         const int proj[2] = {int(o->pos[0]+d*n0[0]), int(o->pos[1]+d*n0[1])};
-        return (proj[0]+1 >= std::min(pos[0],end[0]) && proj[0] <= std::max(pos[0],end[0]) &&
-                proj[1]+1 >= std::min(pos[1],end[1]) && proj[1] <= std::max(pos[1],end[1]));
+        return (proj[0]+o->hitbox_size >= std::min(pos[0],end[0]) && proj[0]-o->hitbox_size <= std::max(pos[0],end[0]) &&
+                proj[1]+o->hitbox_size >= std::min(pos[1],end[1]) && proj[1]-o->hitbox_size <= std::max(pos[1],end[1]));
     }
 
     return false;
@@ -83,7 +83,7 @@ bool Laser::collides(Object* o)
 void Laser::move()
 {
     accurate_pos[0] = shot_by->pos[0];
-    accurate_pos[1] = shot_by->pos[1];s
+    accurate_pos[1] = shot_by->pos[1];
 }
 
 //Shockwave
