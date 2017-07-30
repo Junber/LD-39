@@ -10,11 +10,17 @@ enum Movements
     none=0,walk_towards_player,keep_distance_from_player,MOVEMENTS_NUM
 };
 
+enum Weapons
+{
+    alien_pistol=0,smart_pistol,WEAPON_NUM
+};
+
 struct Enemy_type
 {
     int life, cooldown, speed;
     int bullet_range, bullet_size, bullet_speed;
     Movements movement;
+    Weapons weapon;
 };
 
 class Enemy: public Person
@@ -39,7 +45,7 @@ class Player: public Person
 {
 public:
     Ages age;
-    int speed, cur_anim_frame;
+    int speed, cur_anim_frame, last_pos[2];
 
     Player();
     void update();

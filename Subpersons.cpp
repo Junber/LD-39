@@ -55,9 +55,41 @@ void Enemy::update()
     cur_cooldown--;
     if (cur_cooldown<=0)
     {
-        new Bullet(this,type->bullet_speed*dx/sum,type->bullet_speed*dy/sum);
-
         cur_cooldown = max_cooldown;
+
+        if (type->weapon == alien_pistol)
+        {
+            new Bullet(this,type->bullet_speed*dx/sum,type->bullet_speed*dy/sum);
+        }
+        else if (type->weapon == smart_pistol)
+        {
+            float v[2] = {float(player->pos[0]-player->last_pos[0])/type->bullet_speed, float(player->pos[1]-player->last_pos[1])/type->bullet_speed},
+                d[2] = {float(pos[0]-player->pos[0])/type->bullet_speed, float(pos[1]-player->pos[1])/type->bullet_speed},
+                r = hitbox_size+player->hitbox_size-2,
+                a =    v[0]*v[0] + v[1]*v[1] - 1,
+                b = -2*(v[0]*d[0] + v[1]*d[1] + r),
+                c =    d[0]*d[0] + d[1]*d[1] - r*r,
+                det = b*b - 4*a*c;
+
+            if (det >= 0)
+            {
+                det = std::sqrt(det);
+
+                float t1 = (-b + det)/ (2*a),
+                    t2 =   (-b - det)/ (2*a),
+                    t = (t2>0 ? t2 : t1),
+                    w[2] = {v[0]*t-d[0], v[1]*t-d[1]},
+                    len = std::sqrt(w[0]*w[0] + w[1]*w[1]);
+
+                new Bullet(this,type->bullet_speed*w[0]/len,type->bullet_speed*w[1]/len);
+            }
+            else
+            {
+                //This means the bullet is to slow, so we just change the weapon altogether
+                type->weapon = alien_pistol;
+                cur_cooldown = 0;
+            }
+        }
     }
 
     for (Obstacle* o: obstacles)
@@ -79,6 +111,9 @@ Player::Player() : Person(0,0, 15, 100,100, "age1")
 
     render_size[0] = render_size[1] = 32;
 
+    last_pos[0] = pos[0];
+    last_pos[1] = pos[1];
+
     rotate_center = {render_size[0]/2-hitbox_offset,render_size[1]/2};
 
     age = overpowered;
@@ -87,6 +122,9 @@ Player::Player() : Person(0,0, 15, 100,100, "age1")
 
 void Player::update()
 {
+    last_pos[0] = pos[0];
+    last_pos[1] = pos[1];
+
     auto state = SDL_GetKeyboardState(nullptr);
 
     bool moving = false;
