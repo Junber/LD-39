@@ -31,7 +31,7 @@ public:
 class Person: public Object
 {
 public:
-    int lifepower, bullet_size, bullet_range, cur_cooldown, max_cooldown;
+    int lifepower, bullet_size, bullet_range, cur_cooldown, max_cooldown, cur_anim_frame;
     bool life_draining, is_player;
 
     Person(int x, int y, int hitbox, int life, int cooldown, std::string s);

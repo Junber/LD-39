@@ -29,7 +29,6 @@ class Enemy: public Person
 {
 public:
     bool dead;
-    int cur_anim_frame;
     Enemy_type* type;
 
     Enemy(int x, int y, Enemy_type* typ);
@@ -49,7 +48,7 @@ class Player: public Person
 {
 public:
     Ages age;
-    int speed, cur_anim_frame, last_pos[2];
+    int speed, last_pos[2];
     const int hitbox_offset = 5;
 
     Player();
@@ -67,12 +66,13 @@ public:
     bool dead, scared;
     int circle_around[2];
     float real_pos[2];
-    std::string dead_tex;
 
     NPC(int x, int y, int hitbox, std::string s);
     ~NPC();
     void update();
     void kill();
+    int get_anim_frame();
+    int get_anim_type();
 };
 
 extern std::deque<Person*> enemies, dead_enemies, friends, dead_friends;

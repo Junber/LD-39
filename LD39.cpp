@@ -145,7 +145,7 @@ int main(int argc, char* args[])
 
     new Obstacle(50,50,25,"House");
     new Enemy(random(50,window[0]),random(50,window[1]),random_enemy_type());
-    new NPC(200,200,5,"NPC");
+    new NPC(200,200,5,"npc_1");
 
     SDL_Event e;
 	while (!breakk)

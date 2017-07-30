@@ -22,8 +22,6 @@ Enemy::Enemy(int x, int y, Enemy_type* typ): Person(x, y, typ->hitbox, typ->life
 
     render_size[0] = render_size[1] = 34;
 
-    cur_anim_frame=0;
-
     rotate_center = {15,18};
 }
 
@@ -206,7 +204,6 @@ Player::Player() : Person(0,0, 15, 100,100, "age1")
     is_player = true;
     speed = 2;
 
-    cur_anim_frame = 0;
     cur_cooldown = 0;
 
     render_size[0] = render_size[1] = 32;
@@ -469,10 +466,12 @@ NPC::NPC(int x, int y, int hitbox, std::string s) : Person(x, y, hitbox, 0, 1, s
     dead = scared = false;
     friends.push_back(this);
 
-    dead_tex = s+"_dead";
-
     real_pos[0] = circle_around[0] = pos[0];
     real_pos[1] = circle_around[1] = pos[1];
+
+    render_size[0] = render_size[1] = 32;
+
+    rotate_center = {17,17};
 }
 
 NPC::~NPC()
@@ -489,7 +488,24 @@ int sign (int x)
 const int circle_radius = 50;
 void NPC::update()
 {
-    if (dead) return;
+    cur_anim_frame++;
+
+    if (dead)
+    {
+        iframes = 0;
+        if (cur_anim_frame == 40/(2+2*scared)-1)
+        {
+            SDL_SetRenderTarget(renderer,bg);
+            pos[0] += camera[0];
+            pos[1] += camera[1];
+            render();
+            SDL_SetRenderTarget(renderer,nullptr);
+            to_delete.push_back(this);
+        }
+        return;
+    }
+
+    float last_pos[2] = {real_pos[0],real_pos[1]};
 
     Person* run_from = nullptr;
     for (Person* p: enemies)
@@ -552,6 +568,10 @@ void NPC::update()
     {
         if (o->collides(this)) o->push_away(this);
     }
+
+    rotation = std::atan2(real_pos[1]-last_pos[1],real_pos[0]-last_pos[0])*180/M_PI;
+
+    cur_anim_frame %= 50/(2+2*scared);
 }
 
 void NPC::kill()
@@ -559,6 +579,22 @@ void NPC::kill()
     remove_it(&friends, (Person*) this);
     dead_friends.push_back(this);
     dead = true;
-    tex = itex = load_image(dead_tex);
+    scared = false;
     iframes = 0;
+    cur_anim_frame = 0;
+}
+
+int NPC::get_anim_frame()
+{
+    if (cur_anim_frame < 15/(2+2*scared)) return 0;
+    else if (cur_anim_frame < 25/(2+2*scared)) return 1;
+    else if (cur_anim_frame < 40/(2+2*scared)) return 2;
+    else if (cur_anim_frame < 50/(2+2*scared)) return 3;
+
+    return 0; //shouldn't happen
+}
+
+int NPC::get_anim_type()
+{
+    return 1+dead;
 }

@@ -77,6 +77,7 @@ Person::Person(int x, int y, int hitbox, int life, int cooldown, std::string s) 
     lifepower = life;
     bullet_size=5;
     bullet_range=10;
+    cur_anim_frame=0;
 
     cur_cooldown = max_cooldown = cooldown;
 
