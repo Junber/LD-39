@@ -321,8 +321,8 @@ NPC::NPC(int x, int y, int hitbox, std::string s) : Person(x, y, hitbox, 0, 1, s
 
     dead_tex = s+"_dead";
 
-    real_pos[0] = pos[0];
-    real_pos[1] = pos[1];
+    real_pos[0] = circle_around[0] = pos[0];
+    real_pos[1] = circle_around[1] = pos[1];
 }
 
 NPC::~NPC()
@@ -361,19 +361,23 @@ void NPC::update()
     {
         scared = false;
 
-        float dx = circle_around[0]-real_pos[0], dy = circle_around[1]-real_pos[1], sum = abs(dx)+abs(dy);
-
-        if (std::pow(pos[0]-circle_around[0],2)+std::pow(pos[1]-circle_around[1],2) < std::pow(circle_radius-2,2))
-        {
-            real_pos[0] -= 2.*dx/sum;
-            real_pos[1] -= 2.*dy/sum;
-        }
+        if (pos[0] == circle_around[0] && pos[1] == circle_around[1]) real_pos[0] += 1;
         else
         {
-            double angle = std::atan2(dy,dx);
-            angle += 0.02;
-            real_pos[0] = circle_around[0]-std::cos(angle)*circle_radius;
-            real_pos[1] = circle_around[1]-std::sin(angle)*circle_radius;
+            float dx = circle_around[0]-real_pos[0], dy = circle_around[1]-real_pos[1], sum = abs(dx)+abs(dy);
+
+            if (std::pow(pos[0]-circle_around[0],2)+std::pow(pos[1]-circle_around[1],2) < std::pow(circle_radius-2,2))
+            {
+                real_pos[0] -= 2.*dx/sum;
+                real_pos[1] -= 2.*dy/sum;
+            }
+            else
+            {
+                double angle = std::atan2(dy,dx);
+                angle += 0.02;
+                real_pos[0] = circle_around[0]-std::cos(angle)*circle_radius;
+                real_pos[1] = circle_around[1]-std::sin(angle)*circle_radius;
+            }
         }
 
         pos[0] = real_pos[0];
