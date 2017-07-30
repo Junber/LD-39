@@ -12,11 +12,13 @@ bool show_hitbox = true;
 
 //Enemy
 
-Enemy::Enemy(int x, int y, int hitbox, int life, int cooldown, std::string s): Person(x, y, hitbox, life, cooldown, s)
+Enemy::Enemy(int x, int y, int hitbox, std::string s, Enemy_type* typ): Person(x, y, hitbox, typ->life, typ->cooldown, s)
 {
-    player = false;
+    type = typ;
     dead = false;
     enemies.push_back(this);
+    bullet_range = type->bullet_range;
+    bullet_size = type->bullet_size;
 
     dead_tex = s+"_dead";
 }
@@ -42,6 +44,22 @@ void Enemy::update()
 
     if (iframes>0) iframes--;
 
+    int dx = player->pos[0]-pos[0], dy = player->pos[1]-pos[1], sum = abs(dx)+abs(dy);
+
+    if (sum && (type->movement == walk_towards_player || (type->movement == keep_distance_from_player && dx*dx+dy*dy > bullet_range*bullet_range*2/3)))
+    {
+        pos[0] += type->speed*dx/sum;
+        pos[1] += type->speed*dy/sum;
+    }
+
+    cur_cooldown--;
+    if (cur_cooldown<=0)
+    {
+        new Bullet(this,type->bullet_speed*dx/sum,type->bullet_speed*dy/sum);
+
+        cur_cooldown = max_cooldown;
+    }
+
     for (Obstacle* o: obstacles)
     {
         if (o->collides(this)) o->push_away(this);
@@ -53,8 +71,8 @@ void Enemy::update()
 const int hitbox_offset = 5;
 Player::Player() : Person(0,0, 15, 100,100, "age1")
 {
-    player = true;
-    speed = 1;
+    is_player = true;
+    speed = 2;
 
     cur_anim_frame = 0;
     cur_cooldown = 0;
@@ -296,7 +314,7 @@ int Player::get_anim_type()
 
 NPC::NPC(int x, int y, int hitbox, std::string s) : Person(x, y, hitbox, 0, 1, s)
 {
-    player = dead = scared = false;
+    dead = scared = false;
     friends.push_back(this);
 
     dead_tex = s+"_dead";

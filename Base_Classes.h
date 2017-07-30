@@ -32,7 +32,7 @@ class Person: public Object
 {
 public:
     int lifepower, bullet_size, bullet_range, cur_cooldown, max_cooldown;
-    bool player, life_draining;
+    bool life_draining, is_player;
 
     Person(int x, int y, int hitbox, int life, int cooldown, std::string s);
     void attack(Person* attacker);

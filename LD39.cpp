@@ -4,6 +4,8 @@
 #include <map>
 #include <string>
 #include <iostream>
+#include <random>
+#include <time.h>
 
 #include "Loading.h"
 #include "Base_Classes.h"
@@ -13,6 +15,33 @@
 #ifndef _STATIC
 void *__gxx_personality_v0;
 #endif
+
+std::default_random_engine generator;
+int random(int x, int y)
+{
+    std::uniform_int_distribution<int> distribution(x,y);
+    return distribution(generator);
+}
+
+void random_init()
+{
+    generator.seed(time(nullptr));
+    random(0,1);
+}
+
+Enemy_type* random_enemy_type()
+{
+    Enemy_type* e = new Enemy_type();
+    e->bullet_range = random(50,300);
+    e->bullet_size = random(5,30);
+    e->bullet_speed = random(1,10);
+    e->cooldown = random(30,60);
+    e->life = random(10,40);
+    e->movement = static_cast<Movements>(random(0,MOVEMENTS_NUM-1));
+    e->speed = 2;//random(2,10);
+
+    return e;
+}
 
 int main(int argc, char* args[])
 {
@@ -24,8 +53,7 @@ int main(int argc, char* args[])
     player = new Player();
 
     new Obstacle(50,50,25,"House");
-    new Enemy(100,50,5,100,60,"Enemy");
-    new Enemy(50,300,5,100,60,"Enemy");
+    for (int i=0; i<10; i++) new Enemy(random(50,window[0]),random(50,window[1]),5,"Enemy",random_enemy_type());
     new NPC(100,60,5,"NPC");
 
     //SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);

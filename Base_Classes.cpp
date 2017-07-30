@@ -76,6 +76,7 @@ Person::Person(int x, int y, int hitbox, int life, int cooldown, std::string s) 
     cur_cooldown = max_cooldown = cooldown;
 
     life_draining = true;
+    is_player = false;
 }
 
 void Person::attack(Person* attacker)
@@ -100,7 +101,7 @@ Base_bullet::Base_bullet(Person* shooter) : Object(shooter->pos[0], shooter->pos
     remove_on_impact = true;
     instant_kill = false;
 
-    enemy = !shot_by->player;
+    enemy = !shot_by->is_player;
     lifetime = shot_by->bullet_range;
 
     accurate_pos[0] = pos[0];

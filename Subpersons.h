@@ -5,13 +5,26 @@
 
 extern bool show_hitbox;
 
+enum Movements
+{
+    none=0,walk_towards_player,keep_distance_from_player,MOVEMENTS_NUM
+};
+
+struct Enemy_type
+{
+    int life, cooldown, speed;
+    int bullet_range, bullet_size, bullet_speed;
+    Movements movement;
+};
+
 class Enemy: public Person
 {
 public:
     bool dead;
     std::string dead_tex;
+    Enemy_type* type;
 
-    Enemy(int x, int y, int hitbox, int life, int cooldown, std::string s);
+    Enemy(int x, int y, int hitbox, std::string s, Enemy_type* typ);
     ~Enemy();
     void update();
     void kill();
