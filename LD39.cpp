@@ -31,17 +31,46 @@ void random_init()
 
 Enemy_type* random_enemy_type()
 {
-    Enemy_type* e = new Enemy_type();
-    e->bullet_range = random(50,300);
-    e->bullet_size = random(5,30);
-    e->bullet_speed = random(1,5);
-    e->cooldown = random(30,60);
-    e->life = random(10,40);
-    e->movement = circle_player;//static_cast<Movements>(random(0,MOVEMENTS_NUM-1));
-    e->weapon = static_cast<Weapons>(random(0,WEAPON_NUM-1));
-    e->speed = 2;//random(2,10);
+    Enemy_type* e = new Enemy_type(); //circlelover
+    e->bullet_range = 150;
+    e->bullet_size = 10;
+    e->bullet_speed = 2;
+    e->cooldown = 50;
+    e->life = 20;
+    e->movement = circle_player;
+    e->weapon = reverse_circlegun;
+    e->speed = 2;
+    e->texture = "alien_grey";
 
-    return e;
+    Enemy_type* f = new Enemy_type(); //circlegunner
+    f->bullet_range = 250;
+    f->bullet_size = 10;
+    f->bullet_speed = 2;
+    f->cooldown = 40;
+    f->life = 20;
+    f->movement = circle_player;
+    f->weapon = circlegun;
+    f->speed = 2;
+    f->texture = "alien_brown";
+
+    Enemy_type* g = new Enemy_type(); //better soldier
+    g->bullet_range = 250;
+    g->bullet_size = 10;
+    g->bullet_speed = 3;
+    g->cooldown = 30;
+    g->life = 20;
+    g->movement = keep_distance_from_player;
+    g->weapon = smart_pistol;
+    g->speed = 4;
+    g->texture = "alien_green";
+
+    f->younger = e;
+    e->older = f;
+
+    g->younger = f;
+    f->older = g;
+
+    return g;
 }
 
 int main(int argc, char* args[])
@@ -52,14 +81,14 @@ int main(int argc, char* args[])
 
     init_window();
     SDL_RenderSetScale(renderer,zoom,zoom);
-    SDL_Texture* bg = make_background();
+    bg = make_background();
 
     transition::transition = false;
 
     player = new Player();
 
     new Obstacle(50,50,25,"House");
-    for (int i=0; i<5; i++) new Enemy(random(50,window[0]),random(50,window[1]),5,"alien_brown",random_enemy_type());
+    new Enemy(random(50,window[0]),random(50,window[1]),5,random_enemy_type());
     new NPC(200,200,5,"NPC");
 
     SDL_Event e;

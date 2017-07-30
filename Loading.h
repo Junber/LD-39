@@ -7,6 +7,7 @@
 extern SDL_Renderer* renderer;
 extern bool breakk;
 extern int camera[2];
+extern SDL_Texture* bg;
 
 namespace transition
 {

@@ -9,6 +9,7 @@ SDL_Window* renderwindow;
 SDL_Renderer* renderer;
 bool breakk = false;
 int camera[2] = {0,0};
+SDL_Texture* bg;
 
 namespace transition
 {

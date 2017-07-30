@@ -19,6 +19,7 @@ struct Enemy_type
 {
     int life, cooldown, speed;
     int bullet_range, bullet_size, bullet_speed;
+    std::string texture="alien_brown";
     Movements movement;
     Weapons weapon;
     Enemy_type *younger=nullptr, *older=nullptr;
@@ -29,10 +30,9 @@ class Enemy: public Person
 public:
     bool dead;
     int cur_anim_frame;
-    std::string dead_tex;
     Enemy_type* type;
 
-    Enemy(int x, int y, int hitbox, std::string s, Enemy_type* typ);
+    Enemy(int x, int y, int hitbox, Enemy_type* typ);
     ~Enemy();
     void update();
     void kill();
