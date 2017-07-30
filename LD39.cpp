@@ -26,7 +26,7 @@ int main(int argc, char* args[])
     new Obstacle(50,50,25,"House");
     new Enemy(100,50,5,100,60,"Enemy");
     new Enemy(50,300,5,100,60,"Enemy");
-    new NPC(100,60,5,"Enemy");
+    new NPC(100,60,5,"NPC");
 
     //SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
     SDL_Event e;
@@ -39,6 +39,7 @@ int main(int argc, char* args[])
 
 			#ifdef DEBUG
 			else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_F1) player->kill();
+			else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_F2) show_hitbox = !show_hitbox;
 			#endif // DEBUG
 
 			else if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT)

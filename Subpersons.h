@@ -3,6 +3,8 @@
 
 #include "Base_Classes.h"
 
+extern bool show_hitbox;
+
 class Enemy: public Person
 {
 public:

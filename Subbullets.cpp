@@ -86,5 +86,5 @@ void Shockwave::render()
 void Shockwave::move()
 {
     hitbox_size += 5;
-    lifetime = 10; //arbitrary number; makes shockwave last forever
+    if (hitbox_size<= 1000) lifetime = 10; //arbitrary number; makes shockwave last forever
 }

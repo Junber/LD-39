@@ -8,6 +8,7 @@
 
 std::deque<Person*> enemies, dead_enemies, friends, dead_friends;
 Player* player;
+bool show_hitbox = true;
 
 //Enemy
 
@@ -260,10 +261,13 @@ void Player::render()
     Person::render();
     pos[0] -= hitbox_offset;
 
-    SDL_SetRenderDrawColor(renderer,255,255,255,255);
-    SDL_RenderDrawPoint(renderer,pos[0],pos[1]);
-    circleRGBA(renderer,pos[0],pos[1],hitbox_size,255,255,255,255);
-    circleRGBA(renderer,pos[0],pos[1],obstacle_hitbox,255,255,255,255);
+    if (show_hitbox)
+    {
+        SDL_SetRenderDrawColor(renderer,255,255,255,255);
+        SDL_RenderDrawPoint(renderer,pos[0],pos[1]);
+        circleRGBA(renderer,pos[0],pos[1],hitbox_size,255,255,255,255);
+        circleRGBA(renderer,pos[0],pos[1],obstacle_hitbox,255,255,255,255);
+    }
 }
 
 int Player::get_anim_frame()
