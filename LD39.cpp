@@ -47,6 +47,7 @@ Enemy_type* random_enemy_type()
 int main(int argc, char* args[])
 {
     IMG_Init(IMG_INIT_PNG);
+    random_init();
 
     init_window();
     SDL_RenderSetScale(renderer,zoom,zoom);

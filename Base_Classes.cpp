@@ -52,6 +52,8 @@ void Object::render()
 
 bool Object::collides(Object* with)
 {
+    if (pos[0]-with->pos[0] + pos[1]-with->pos[1] > hitbox_size+with->hitbox_size) return false;
+
     return (std::pow(pos[0]-with->pos[0],2) + std::pow(pos[1]-with->pos[1],2) < std::pow(hitbox_size+with->hitbox_size,2));
 }
 
@@ -108,18 +110,15 @@ Base_bullet::Base_bullet(Person* shooter) : Object(shooter->pos[0], shooter->pos
     accurate_pos[1] = pos[1];
 }
 
-bool Base_bullet::check_hit(Person* p)
+bool Base_bullet::exec_hit(Person* p)
 {
-    if (collides(p))
-    {
-        if (instant_kill) p->kill();
-        else p->attack(shot_by);
+    if (instant_kill) p->kill();
+    else p->attack(shot_by);
 
-        if(remove_on_impact)
-        {
-            to_delete.push_back(this);
-            return true;
-        }
+    if(remove_on_impact)
+    {
+        to_delete.push_back(this);
+        return true;
     }
 
     return false;
@@ -143,18 +142,21 @@ void Base_bullet::update()
     bool stop = false;
     for (Person* f: friends)
     {
-        stop = check_hit(f);
+        if (collides(f)) stop = exec_hit(f);
         if (stop) break;
     }
 
     if (!stop)
     {
-        if (enemy) check_hit(player);
+        if (enemy)
+        {
+            if (collides(player)) exec_hit(player);
+        }
         else
         {
             for (Person* e: enemies)
             {
-                if (check_hit(e)) break;
+                if (collides(e) && exec_hit(e)) break;
             }
         }
     }

@@ -24,5 +24,7 @@ void Obstacle::push_away(Object* o)
 
 bool Obstacle::collides(Object* with)
 {
+    if (pos[0]-with->pos[0] + pos[1]-with->pos[1] > obstacle_hitbox+with->obstacle_hitbox) return false;
+
     return (std::pow(pos[0]-with->pos[0],2) + std::pow(pos[1]-with->pos[1],2) < std::pow(obstacle_hitbox+with->obstacle_hitbox,2));
 }

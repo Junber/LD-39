@@ -63,7 +63,7 @@ void Enemy::update()
         }
         else if (type->weapon == smart_pistol)
         {
-            float v[2] = {float(player->pos[0]-player->last_pos[0])/type->bullet_speed, float(player->pos[1]-player->last_pos[1])/type->bullet_speed},
+            const float v[2] = {float(player->pos[0]-player->last_pos[0])/type->bullet_speed, float(player->pos[1]-player->last_pos[1])/type->bullet_speed},
                 d[2] = {float(pos[0]-player->pos[0])/type->bullet_speed, float(pos[1]-player->pos[1])/type->bullet_speed},
                 r = hitbox_size+player->hitbox_size-2,
                 a =    v[0]*v[0] + v[1]*v[1] - 1,
@@ -73,10 +73,9 @@ void Enemy::update()
 
             if (det >= 0)
             {
-                det = std::sqrt(det);
-
-                float t1 = (-b + det)/ (2*a),
-                    t2 =   (-b - det)/ (2*a),
+                const float sqr_det = std::sqrt(det),
+                    t1 = (-b + sqr_det)/ (2*a),
+                    t2 =   (-b - sqr_det)/ (2*a),
                     t = (t2>0 ? t2 : t1),
                     w[2] = {v[0]*t-d[0], v[1]*t-d[1]},
                     len = std::sqrt(w[0]*w[0] + w[1]*w[1]);
@@ -402,13 +401,14 @@ void NPC::update()
     Person* run_from = nullptr;
     for (Person* p: enemies)
     {
-        if (std::pow(pos[0]-p->pos[0],2)+std::pow(pos[1]-p->pos[1],2) < 2500)
+        const int d = std::pow(pos[0]-p->pos[0],2)+std::pow(pos[1]-p->pos[1],2);
+        if (d < 2500)
         {
             scared = true;
             run_from = p;
             break;
         }
-        else if (scared && std::pow(pos[0]-p->pos[0],2)+std::pow(pos[1]-p->pos[1],2) < 40000)
+        else if (scared && d < 40000)
         {
             run_from = p;
             break;
