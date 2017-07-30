@@ -50,6 +50,7 @@ void Enemy::update()
 
     if (dead)
     {
+        iframes = 0;
         if (cur_anim_frame > bullet_range*2) to_delete.push_back(this); //*2 actually not required but safety first
         return;
     }
@@ -59,10 +60,18 @@ void Enemy::update()
     int last_pos[2] = {pos[0],pos[1]};
     int dx = player->pos[0]-pos[0], dy = player->pos[1]-pos[1], sum = abs(dx)+abs(dy);
 
-    if (sum && (type->movement == walk_towards_player || (type->movement == keep_distance_from_player && dx*dx+dy*dy > bullet_range*bullet_range*2/3)))
+    if (sum && (type->movement == walk_towards_player ||
+                ((type->movement == keep_distance_from_player || type->movement == circle_player) && dx*dx+dy*dy > bullet_range*bullet_range*2/3)))
     {
         pos[0] += type->speed*dx/sum;
         pos[1] += type->speed*dy/sum;
+    }
+    else if (type->movement == circle_player)
+    {
+        double angle = std::atan2(player->pos[1]-pos[1],player->pos[0]-pos[0]);
+        angle += type->speed*0.01;
+        pos[0] = player->pos[0]-std::cos(angle)*bullet_range*2/3;
+        pos[1] = player->pos[1]-std::sin(angle)*bullet_range*2/3;
     }
 
     cur_cooldown--;

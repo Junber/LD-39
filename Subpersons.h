@@ -7,7 +7,7 @@ extern bool show_hitbox;
 
 enum Movements
 {
-    none=0,walk_towards_player,keep_distance_from_player,dodge,MOVEMENTS_NUM
+    none=0,walk_towards_player,keep_distance_from_player,circle_player,MOVEMENTS_NUM
 };
 
 enum Weapons

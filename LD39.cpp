@@ -37,7 +37,7 @@ Enemy_type* random_enemy_type()
     e->bullet_speed = random(1,5);
     e->cooldown = random(30,60);
     e->life = random(10,40);
-    e->movement = static_cast<Movements>(random(0,MOVEMENTS_NUM-1));
+    e->movement = circle_player;//static_cast<Movements>(random(0,MOVEMENTS_NUM-1));
     e->weapon = static_cast<Weapons>(random(0,WEAPON_NUM-1));
     e->speed = 2;//random(2,10);
 
