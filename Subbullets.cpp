@@ -68,9 +68,16 @@ bool Laser::collides(Object* o)
         n[2] = {-(pos[1]-end[1]), pos[0]-end[0]};
     float len_n = std::sqrt(n[0]*n[0]+n[1]*n[1]),
         n0[2] = {n[0]/len_n,n[1]/len_n},
-        d = abs(diff[0]*n0[0]+diff[1]*n0[1]);
+        d = diff[0]*n0[0]+diff[1]*n0[1];
 
-    return d <= o->hitbox_size+hitbox_size; //add hitbox_size to o->hitbox_size if laser is thicker
+    if (abs(d) <= o->hitbox_size)//+hitbox_size)
+    {
+        int proj[2] = {o->pos[0]+d*n0[0], o->pos[0]+d*n0[1]};
+        return (proj[0] >= std::min(pos[0],end[0]) && proj[0] <= std::max(pos[0],end[0]) &&
+                proj[1] >= std::min(pos[1],end[1]) && proj[1] <= std::max(pos[1],end[1]));
+    }
+
+    return false;
 }
 
 //Shockwave
