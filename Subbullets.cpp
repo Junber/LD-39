@@ -22,6 +22,9 @@ void Bullet::move()
 
 void Bullet::render()
 {
+    if (pos[0]-camera[0] < -hitbox_size || pos[0]-camera[0] > window[0]+hitbox_size ||
+        pos[1]-camera[1] < -hitbox_size || pos[1]-camera[1] > window[1]+hitbox_size) return;
+
     filledCircleRGBA(renderer,pos[0]-camera[0],pos[1]-camera[1],hitbox_size,enemy*255,(!enemy)*255,0,255);
     circleRGBA(renderer,pos[0]-camera[0],pos[1]-camera[1],hitbox_size,0,0,0,255);
 }
