@@ -46,6 +46,7 @@ class Player: public Person
 public:
     Ages age;
     int speed, cur_anim_frame, last_pos[2];
+    const int hitbox_offset = 5;
 
     Player();
     void update();

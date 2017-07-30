@@ -115,7 +115,6 @@ void Enemy::update()
 
 //Player
 
-const int hitbox_offset = 5;
 Player::Player() : Person(0,0, 15, 100,100, "age1")
 {
     is_player = true;
@@ -196,7 +195,7 @@ void Player::update()
 
 void Player::shoot(int x, int y)
 {
-    if (cur_cooldown <= 0)
+    if (cur_cooldown <= 0 && !transition::transition)
     {
         cur_cooldown = max_cooldown;
 
@@ -236,6 +235,11 @@ void Player::kill()
 {
     age=static_cast<Ages>(age+1);
     lifepower=100;
+
+    transition::transition = true;
+    transition::tex = load_image("age"+std::to_string(age)+"-"+std::to_string(age+1));
+    transition::time = 0;
+    SDL_QueryTexture(transition::tex, nullptr, nullptr, &transition::size, &transition::h);
 
     if (age>overpowered) max_cooldown=10;
     if (age>laser) bullet_range = 30;
@@ -332,6 +336,8 @@ void Player::kill()
 
 void Player::render()
 {
+    if (transition::transition) return;
+
     pos[0] += hitbox_offset;
     Person::render();
     pos[0] -= hitbox_offset;
