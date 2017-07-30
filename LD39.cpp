@@ -29,48 +29,103 @@ void random_init()
     random(0,1);
 }
 
+std::deque<Enemy_type*> enemy_types;
+void gen_enemy_types()
+{
+    {
+        Enemy_type* e = new Enemy_type(); //circlelover
+        e->bullet_range = 150;
+        e->bullet_size = 10;
+        e->bullet_speed = 2;
+        e->cooldown = 50;
+        e->life = 20;
+        e->movement = circle_player;
+        e->weapon = reverse_circlegun;
+        e->speed = 2;
+        e->texture = "alien_grey";
+
+        Enemy_type* f = new Enemy_type(); //circlegunner
+        f->bullet_range = 250;
+        f->bullet_size = 10;
+        f->bullet_speed = 2;
+        f->cooldown = 40;
+        f->life = 20;
+        f->movement = circle_player;
+        f->weapon = circlegun;
+        f->speed = 2;
+        f->texture = "alien_brown";
+
+        Enemy_type* g = new Enemy_type(); //better soldier
+        g->bullet_range = 250;
+        g->bullet_size = 20;
+        g->bullet_speed = 3;
+        g->cooldown = 30;
+        g->life = 20;
+        g->movement = keep_distance_from_player;
+        g->weapon = smart_pistol;
+        g->speed = 4;
+        g->texture = "alien_green";
+
+        f->younger = e;
+        e->older = f;
+
+        g->younger = f;
+        f->older = g;
+
+        enemy_types.push_back(e);
+        enemy_types.push_back(f);
+        enemy_types.push_back(g);
+    }
+
+    {
+        Enemy_type* e = new Enemy_type(); //runner
+        e->bullet_range = 20;
+        e->bullet_size = 10;
+        e->bullet_speed = 2;
+        e->cooldown = 50;
+        e->life = 10;
+        e->movement = walk_towards_player;
+        e->weapon = melee;
+        e->speed = 5;
+        e->texture = "alien_red";
+
+        Enemy_type* f = new Enemy_type(); //worse soldier
+        f->bullet_range = 250;
+        f->bullet_size = 10;
+        f->bullet_speed = 4;
+        f->cooldown = 40;
+        f->life = 20;
+        f->movement = keep_distance_from_player;
+        f->weapon = alien_pistol;
+        f->speed = 2;
+        f->texture = "alien_orange";
+
+        Enemy_type* g = new Enemy_type(); //sniper
+        g->bullet_range = 500;
+        g->bullet_size = 20;
+        g->bullet_speed = 7;
+        g->cooldown = 30;
+        g->life = 10;
+        g->movement = none;
+        g->weapon = smart_pistol;
+        g->speed = 1;
+        g->texture = "alien_yellow";
+
+        f->younger = e;
+        e->older = f;
+
+        g->younger = f;
+        f->older = g;
+
+        enemy_types.push_back(e);
+        enemy_types.push_back(f);
+        enemy_types.push_back(g);
+    }
+}
+
 Enemy_type* random_enemy_type()
 {
-    Enemy_type* e = new Enemy_type(); //circlelover
-    e->bullet_range = 150;
-    e->bullet_size = 10;
-    e->bullet_speed = 2;
-    e->cooldown = 50;
-    e->life = 20;
-    e->movement = circle_player;
-    e->weapon = reverse_circlegun;
-    e->speed = 2;
-    e->texture = "alien_grey";
-
-    Enemy_type* f = new Enemy_type(); //circlegunner
-    f->bullet_range = 250;
-    f->bullet_size = 10;
-    f->bullet_speed = 2;
-    f->cooldown = 40;
-    f->life = 20;
-    f->movement = circle_player;
-    f->weapon = circlegun;
-    f->speed = 2;
-    f->texture = "alien_brown";
-
-    Enemy_type* g = new Enemy_type(); //better soldier
-    g->bullet_range = 250;
-    g->bullet_size = 10;
-    g->bullet_speed = 3;
-    g->cooldown = 30;
-    g->life = 20;
-    g->movement = keep_distance_from_player;
-    g->weapon = smart_pistol;
-    g->speed = 4;
-    g->texture = "alien_green";
-
-    f->younger = e;
-    e->older = f;
-
-    g->younger = f;
-    f->older = g;
-
-    return g;
+    return enemy_types[random(0,enemy_types.size()-1)];
 }
 
 int main(int argc, char* args[])
@@ -82,13 +137,14 @@ int main(int argc, char* args[])
     init_window();
     SDL_RenderSetScale(renderer,zoom,zoom);
     bg = make_background();
+    gen_enemy_types();
 
     transition::transition = false;
 
     player = new Player();
 
     new Obstacle(50,50,25,"House");
-    new Enemy(random(50,window[0]),random(50,window[1]),5,random_enemy_type());
+    new Enemy(random(50,window[0]),random(50,window[1]),random_enemy_type());
     new NPC(200,200,5,"NPC");
 
     SDL_Event e;

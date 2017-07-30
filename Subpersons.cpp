@@ -12,7 +12,7 @@ bool show_hitbox = true;
 
 //Enemy
 
-Enemy::Enemy(int x, int y, int hitbox, std::string s, Enemy_type* typ): Person(x, y, hitbox, typ->life, typ->cooldown, s)
+Enemy::Enemy(int x, int y, Enemy_type* typ): Person(x, y, typ->hitbox, typ->life, typ->cooldown, typ->texture)
 {
     type = typ;
     dead = false;
@@ -23,8 +23,6 @@ Enemy::Enemy(int x, int y, int hitbox, std::string s, Enemy_type* typ): Person(x
     render_size[0] = render_size[1] = 34;
 
     cur_anim_frame=0;
-
-    dead_tex = s+"_dead";
 
     rotate_center = {15,18};
 }
@@ -37,11 +35,23 @@ Enemy::~Enemy()
 
 void Enemy::kill()
 {
-    remove_it(&enemies, (Person*) this);
-    dead_enemies.push_back(this);
-    dead = true;
-    iframes = 0;
-    cur_anim_frame = 0;
+    if (type->younger && lifepower <= 0)
+    {
+        type = type->younger;
+        bullet_range = type->bullet_range;
+        bullet_size = type->bullet_size;
+        lifepower = type->life;
+        max_cooldown = type->cooldown;
+        tex = load_image(type->texture);
+    }
+    else
+    {
+        remove_it(&enemies, (Person*) this);
+        dead_enemies.push_back(this);
+        dead = true;
+        iframes = 0;
+        cur_anim_frame = 0;
+    }
 }
 
 void Enemy::update()
@@ -51,7 +61,18 @@ void Enemy::update()
     if (dead)
     {
         iframes = 0;
-        if (cur_anim_frame > bullet_range*2) to_delete.push_back(this); //*2 actually not required but safety first
+        if (cur_anim_frame == 70)
+        {
+            SDL_Texture* t = load_image("alien_dead");
+            int x,y;
+            SDL_QueryTexture(t,nullptr,nullptr,&x,&y);
+            SDL_Rect r = {pos[0]-x/2,pos[1]-y/2,x,y};
+            SDL_SetRenderTarget(renderer, bg);
+            SDL_RenderCopyEx(renderer,t,nullptr,&r,rotation,nullptr,SDL_FLIP_NONE);
+            SDL_SetRenderTarget(renderer, nullptr);
+        }
+
+        if (cur_anim_frame > bullet_range*2 && cur_anim_frame >= 120) to_delete.push_back(this); //*2 actually not required but safety first
         return;
     }
 
@@ -79,13 +100,18 @@ void Enemy::update()
     {
         cur_cooldown = max_cooldown;
 
+        if (type->weapon == melee)
+        {
+            if (dx*dx+dy*dy < bullet_range) new Melee(this);
+            else cur_cooldown = 0;
+        }
         if (type->weapon == alien_pistol)
         {
             new Bullet(this,type->bullet_speed*dx/sum,type->bullet_speed*dy/sum);
         }
         else if (type->weapon == smart_pistol)
         {
-            const float v[2] = {float(player->pos[0]-player->last_pos[0])/type->bullet_speed, float(player->pos[1]-player->last_pos[1])/type->bullet_speed},
+            float v[2] = {float(player->pos[0]-player->last_pos[0])/type->bullet_speed, float(player->pos[1]-player->last_pos[1])/type->bullet_speed},
                 d[2] = {float(pos[0]-player->pos[0])/type->bullet_speed, float(pos[1]-player->pos[1])/type->bullet_speed},
                 r = hitbox_size+player->hitbox_size-2,
                 a =    v[0]*v[0] + v[1]*v[1] - 1,
@@ -95,7 +121,7 @@ void Enemy::update()
 
             if (det >= 0)
             {
-                const float sqr_det = std::sqrt(det),
+                float sqr_det = std::sqrt(det),
                     t1 = (-b + sqr_det)/ (2*a),
                     t2 =   (-b - sqr_det)/ (2*a),
                     t = (t2>0 ? t2 : t1),

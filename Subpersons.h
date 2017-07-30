@@ -12,12 +12,12 @@ enum Movements
 
 enum Weapons
 {
-    alien_pistol=0,smart_pistol,circlegun,reverse_circlegun,WEAPON_NUM
+    alien_pistol=0,smart_pistol,circlegun,reverse_circlegun,melee,WEAPON_NUM
 };
 
 struct Enemy_type
 {
-    int life, cooldown, speed;
+    int life, cooldown, speed, hitbox=14;
     int bullet_range, bullet_size, bullet_speed;
     std::string texture="alien_brown";
     Movements movement;
@@ -32,7 +32,7 @@ public:
     int cur_anim_frame;
     Enemy_type* type;
 
-    Enemy(int x, int y, int hitbox, Enemy_type* typ);
+    Enemy(int x, int y, Enemy_type* typ);
     ~Enemy();
     void update();
     void kill();
