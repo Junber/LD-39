@@ -476,8 +476,6 @@ void Player::kill()
 
         breakk = true;
     }
-
-    if (age==squaregun) show_image(load_image("angel"));
 }
 
 void Player::render()

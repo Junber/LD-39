@@ -212,6 +212,8 @@ int main(int argc, char* args[])
 
     transition::transition = false;
 
+    int levels_passed = 0;
+
     player = new Player();
 
     SDL_Event e;
@@ -248,7 +250,6 @@ int main(int argc, char* args[])
 			    }
 
 			}
-
 
 			else if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT)
             {
@@ -310,7 +311,11 @@ int main(int argc, char* args[])
 
             if (player->age == squaregun)
             {
-                filledCircleRGBA(renderer,dest.x+p.x,dest.y+p.y,40,255,255,255,std::min(100,transition::time/2));
+                if (transition::time == 10*15) show_image(load_image("angel"));
+                else if (transition::time >= 10*15)
+                {
+                    filledCircleRGBA(renderer,dest.x+p.x,dest.y+p.y,40,255,255,255,std::min(100,(transition::time-7*15)));
+                }
             }
 
             SDL_RenderCopyEx(renderer,transition::tex,&src,&dest,player->rotation,&p,SDL_FLIP_NONE);
@@ -348,21 +353,27 @@ int main(int argc, char* args[])
 
             if (animations_finished)
             {
-                for (Object* o: objects)
+                levels_passed++;
+
+                if (levels_passed >= 6) show_image(load_image("end"));
+                else
                 {
-                    if (o!=player) to_delete.push_back(o);
+                    for (Object* o: objects)
+                    {
+                        if (o!=player) to_delete.push_back(o);
+                    }
+
+                    for (Object* o: to_delete) delete o;
+                    to_delete.clear();
+
+                    player->pos[0] = map_size[0]/2;
+                    player->pos[1] = map_size[1]/2;
+
+                    gen_level();
+                    for (Object* o: objects) o->update();
+
+                    player->kill();
                 }
-
-                for (Object* o: to_delete) delete o;
-                to_delete.clear();
-
-                player->pos[0] = map_size[0]/2;
-                player->pos[1] = map_size[1]/2;
-
-                gen_level();
-                for (Object* o: objects) o->update();
-
-                player->kill();
             }
         }
 

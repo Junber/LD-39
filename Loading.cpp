@@ -105,6 +105,7 @@ void init_window()
 void show_image(SDL_Texture* tex)
 {
     SDL_Event e;
+    int frames_passed = 0;
 	while (true)
     {
         while(SDL_PollEvent(&e))
@@ -116,14 +117,20 @@ void show_image(SDL_Texture* tex)
 			}
 			else if (e.type == SDL_KEYDOWN)
             {
-			    if (e.key.keysym.sym == SDLK_ESCAPE) breakk = true;
-			    return;
+			    if (e.key.keysym.sym == SDLK_ESCAPE)
+			    {
+			        breakk = true;
+			        return;
+			    }
+			    if (frames_passed > 30) return;
 			}
-			else if (e.type == SDL_MOUSEBUTTONDOWN) return;
+			else if (e.type == SDL_MOUSEBUTTONDOWN && frames_passed > 30) return;
         }
 
         SDL_RenderCopy(renderer,tex,nullptr,nullptr);
         SDL_RenderPresent(renderer);
+        frames_passed++;
+
         limit_fps();
     }
 }
