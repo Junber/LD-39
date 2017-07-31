@@ -82,3 +82,6 @@ $RECYCLE.BIN/
 *.cbp
 *.layout
 *.depend
+
+# Archives
+*.zip
