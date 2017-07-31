@@ -51,6 +51,7 @@ void Bullet::deflect()
 Melee::Melee(Person* shooter) : Base_bullet(shooter)
 {
     remove_on_impact=false;
+    instant_kill=!enemy;
 }
 
 void Melee::move()

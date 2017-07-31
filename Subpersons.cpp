@@ -393,12 +393,13 @@ void Player::kill()
         bullet_range = 30;
         bullet_size = 10;
     }
+    if (age>=pistol) bullet_range = 50;
 
     if (age>=cane)
     {
         max_cooldown = 120;
         bullet_size = 15;
-        bullet_range = max_cooldown/4;
+        bullet_range = max_cooldown/2;
     }
 
     tex = load_image("age"+std::to_string(age+1));
