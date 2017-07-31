@@ -98,7 +98,7 @@ SDL_Texture* make_background()
 
 void init_window()
 {
-    renderwindow = SDL_CreateWindow("LD-39", 50, 50, window[0]*zoom, window[1]*zoom, SDL_WINDOW_SHOWN);
+    renderwindow = SDL_CreateWindow("LD-39", 50, 30, window[0]*zoom, window[1]*zoom, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(renderwindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 }
 

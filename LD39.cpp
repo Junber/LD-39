@@ -173,7 +173,7 @@ int render_number(int x)
 void render_ui()
 {
     SDL_Texture* tex;
-    if ((player->age == squaregun && !transition::transition) || player->age == pistol)
+    if ((player->age == squaregun && !transition::transition) || player->age == pistol || (player->age == cane && transition::transition))
     {
         int digits = render_number(player->ammo);
         SDL_Rect dest = {120+5+digits*32-16, 32+5-16, 64, 64},
@@ -216,17 +216,35 @@ int main(int argc, char* args[])
         while(SDL_PollEvent(&e))
         {
 			if (e.type == SDL_QUIT) breakk = true;
-			else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE) breakk = true;
-
-			#ifdef DEBUG
-			else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_F1) player->kill();
-			else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_F3 && player->age >= 2)
+			else if (e.type == SDL_KEYDOWN)
 			{
-			    player->age = static_cast<Ages>(player->age-2);
-			    player->kill();
+			    switch (e.key.keysym.sym)
+			    {
+                case SDLK_ESCAPE:
+                    breakk = true;
+                    break;
+
+                #ifdef DEBUG
+                case SDLK_F1:
+                    player->kill();
+                    break;
+
+                case SDLK_F2:
+                    show_hitbox = !show_hitbox;
+                    break;
+
+                case SDLK_F3:
+                    if (player->age >= 2)
+                    {
+                        player->age = static_cast<Ages>(player->age-2);
+                        player->kill();
+                    }
+                    break;
+                #endif // DEBUG
+			    }
+
 			}
-			else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_F2) show_hitbox = !show_hitbox;
-			#endif // DEBUG
+
 
 			else if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT)
             {

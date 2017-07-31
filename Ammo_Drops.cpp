@@ -2,7 +2,7 @@
 
 #include "Subpersons.h"
 
-Ammo::Ammo(int x, int y) : Object(x,y,5,"Ammo")
+Ammo::Ammo(int x, int y) : Object(x,y,15,"Ammo")
 {
 
 }

@@ -62,7 +62,7 @@ void Enemy::update()
             SDL_RenderCopyEx(renderer,t,nullptr,&r,rotation,nullptr,SDL_FLIP_NONE);
             SDL_SetRenderTarget(renderer, nullptr);
 
-            new Ammo(pos[0],pos[1]);
+            if (player->age == pistol || player->age == squaregun) new Ammo(pos[0],pos[1]);
         }
 
         if (cur_anim_frame > bullet_range+10 && cur_anim_frame >= 120 && !std::count(to_delete.begin(),to_delete.end(),this)) to_delete.push_back(this); //+10 actually not required but safety first
@@ -310,6 +310,7 @@ void Player::shoot(int x, int y)
             break;
 
         case life_drain:
+            lifepower--;
             new Bullet(this, 15.*dx/sum, 15.*dy/sum);
             break;
 
