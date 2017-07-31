@@ -536,7 +536,7 @@ NPC::~NPC()
     else remove_it(&friends, (Person*) this);
 }
 
-int sign (int x)
+int sign(int x)
 {
     return (x>0?1:(x<0?-1:0));
 }

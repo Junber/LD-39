@@ -4,7 +4,7 @@
 #include "Loading.h"
 #include "SDL2_gfxPrimitives.h"
 #include <iostream>
-
+#include "Obstacles.h"
 
 //Bullet
 
@@ -72,7 +72,7 @@ bool Laser::collides(Object* o)
 {
     const int diff[2] = {o->pos[0]-pos[0],o->pos[1]-pos[1]},
         n[2] = {-(pos[1]-end[1]), pos[0]-end[0]};
-    const float len_n = std::sqrt(n[0]*n[0]+n[1]*n[1]),
+    float len_n = std::sqrt(n[0]*n[0]+n[1]*n[1]),
         n0[2] = {n[0]/len_n,n[1]/len_n},
         d = diff[0]*n0[0]+diff[1]*n0[1];
 
@@ -90,6 +90,33 @@ void Laser::move()
 {
     accurate_pos[0] = shot_by->pos[0];
     accurate_pos[1] = shot_by->pos[1];
+}
+
+/*int abs(int x)
+{
+    return (x<0?-x:x);
+}*/
+
+void Laser::hit_obstacle(Obstacle* o)
+{
+    const int dx = end[0]-pos[0],
+            dy = end[1]-pos[1],
+            dr = dx*dx+dy*dy,
+            d = (pos[0]-o->pos[0])*(end[1]-o->pos[1])-(pos[1]-o->pos[1])*(end[0]-o->pos[0]);
+
+    float root = std::sqrt(std::pow(o->obstacle_hitbox+hitbox_size, 2) * dr - d*d);
+
+    int sol1[2] = {(d*dy + sign(dy)*dx*root)/dr + o->pos[0] , (-d*dx + abs(dy)*root)/dr + o->pos[1]},
+        sol2[2] = {(d*dy - sign(dy)*dx*root)/dr + o->pos[0] , (-d*dx - abs(dy)*root)/dr + o->pos[1]},
+        which;
+
+    if      (abs(sol1[0]-pos[0]) < abs(sol2[0]-pos[0])) which = 0;
+    else if (abs(sol1[0]-pos[0]) > abs(sol2[0]-pos[0])) which = 1;
+    else if (abs(sol1[1]-pos[1]) < abs(sol2[1]-pos[1])) which = 0;
+    else which = 1;
+
+    end[0] = (which? sol2[0]:sol1[0]);
+    end[1] = (which? sol2[1]:sol1[1]);
 }
 
 //Shockwave

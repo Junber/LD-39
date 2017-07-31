@@ -40,6 +40,8 @@ public:
     virtual void kill() {};
 };
 
+class Obstacle;
+
 class Base_bullet: public Object
 {
 public:
@@ -52,6 +54,7 @@ public:
     void update();
     virtual void move() {};
     bool exec_hit(Person* p); //returns true if the scan for further hits should be stopped
+    virtual void hit_obstacle(Obstacle* o) {};
 };
 
 extern std::deque<Object*> objects, to_delete;

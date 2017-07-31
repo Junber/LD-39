@@ -26,5 +26,6 @@ SDL_Texture* make_background();
 void init_window();
 void limit_fps();
 int random(int x, int y);
+int sign(int x);
 
 #endif // _LOADING

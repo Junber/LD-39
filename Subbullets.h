@@ -30,6 +30,7 @@ public:
     void render();
     bool collides(Object* o);
     void move();
+    void hit_obstacle(Obstacle* o);
 };
 
 class Shockwave: public Base_bullet

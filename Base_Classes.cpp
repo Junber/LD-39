@@ -139,15 +139,16 @@ void Base_bullet::update()
     pos[0] = accurate_pos[0];
     pos[1] = accurate_pos[1];
 
-    if (remove_on_impact)
+    for (Obstacle* o: obstacles)
     {
-        for (Obstacle* o: obstacles)
+        if (remove_on_impact && o->collides(this))
         {
-            if (o->collides(this))
-            {
-                to_delete.push_back(this);
-                return;
-            }
+            to_delete.push_back(this);
+            return;
+        }
+        else if (!remove_on_impact && collides(o)) //kind of a hack but WHATEVER
+        {
+            hit_obstacle(o);
         }
     }
 
