@@ -516,7 +516,7 @@ void NPC::update()
     if (dead)
     {
         iframes = 0;
-        if (cur_anim_frame == 40/(2+2*scared)-1)
+        if (cur_anim_frame > 25/(2+2*scared)-1)
         {
             SDL_SetRenderTarget(renderer,bg);
             pos[0] += camera[0];
