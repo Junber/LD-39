@@ -225,7 +225,7 @@ int main(int argc, char* args[])
 
             if (player->age == squaregun)
             {
-                filledCircleRGBA(renderer,dest.x+p.x,dest.y+p.y,25,255,255,255,100);
+                filledCircleRGBA(renderer,dest.x+p.x,dest.y+p.y,40,255,255,255,std::min(100,transition::time/2));
             }
 
             SDL_RenderCopyEx(renderer,transition::tex,&src,&dest,player->rotation,&p,SDL_FLIP_NONE);
