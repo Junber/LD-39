@@ -23,6 +23,8 @@ Enemy::Enemy(int x, int y, Enemy_type* typ): Person(x, y, typ->hitbox, typ->life
 
     render_size[0] = render_size[1] = 34;
 
+    cur_cooldown = random(0,max_cooldown);
+
     rotate_center = {15,18};
 }
 
