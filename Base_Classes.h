@@ -15,6 +15,7 @@ class Object
 {
 public:
     int pos[2], render_size[2], hitbox_size, obstacle_hitbox, iframes;
+    bool deflectable_bullet;
     SDL_Point rotate_center;
     double rotation;
     SDL_Texture *tex, *itex;
@@ -26,6 +27,7 @@ public:
     virtual void render();
     virtual int get_anim_frame();
     virtual int get_anim_type();
+    virtual void deflect() {};
 };
 
 class Person: public Object

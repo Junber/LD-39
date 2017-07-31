@@ -14,6 +14,8 @@ Bullet::Bullet(Person* shooter, float s_x, float s_y) : Base_bullet(shooter)
     speed[1] = s_y;
     tex = load_bullet_image(hitbox_size);
     render_size[0] = render_size[1] = hitbox_size*2+1;
+
+    if (enemy) deflectable_bullet = true;
 }
 
 void Bullet::move()
@@ -35,6 +37,14 @@ void Bullet::render()
     }
 }
 
+void Bullet::deflect()
+{
+    deflectable_bullet = false;
+    enemy = !enemy;
+    speed[0] = -speed[0];
+    speed[1] = -speed[1];
+}
+
 //Melee
 
 Melee::Melee(Person* shooter) : Base_bullet(shooter)
@@ -46,6 +56,17 @@ void Melee::move()
 {
     accurate_pos[0] = shot_by->pos[0];
     accurate_pos[1] = shot_by->pos[1];
+
+    if (!enemy)
+    {
+        for (Object* o: objects)
+        {
+            if (o->deflectable_bullet && o->collides(this))
+            {
+                o->deflect();
+            }
+        }
+    }
 }
 
 void Melee::render()

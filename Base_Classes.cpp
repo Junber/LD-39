@@ -14,6 +14,8 @@ Object::Object(int x, int y, int hitbox, std::string s)
     pos[0] = x;
     pos[1] = y;
 
+    deflectable_bullet = false;
+
     rotation = 0;
     iframes=0;
 

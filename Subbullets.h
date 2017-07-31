@@ -11,6 +11,7 @@ public:
     Bullet(Person* shooter, float s_x, float s_y);
     void move();
     void render();
+    void deflect();
 };
 
 class Melee: public Base_bullet
