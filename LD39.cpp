@@ -32,12 +32,12 @@ void random_init()
 std::deque<Enemy_type*> enemy_types;
 void gen_enemy_types()
 {
-    {
+    { //circlelover, circlegunner, better soldier
         Enemy_type* e = new Enemy_type(); //circlelover
         e->bullet_range = 150;
-        e->bullet_size = 10;
+        e->bullet_size = 5;
         e->bullet_speed = 2;
-        e->cooldown = 50;
+        e->cooldown = 90;
         e->life = 20;
         e->movement = circle_player;
         e->weapon = reverse_circlegun;
@@ -46,24 +46,24 @@ void gen_enemy_types()
 
         Enemy_type* f = new Enemy_type(); //circlegunner
         f->bullet_range = 250;
-        f->bullet_size = 10;
+        f->bullet_size = 5;
         f->bullet_speed = 2;
-        f->cooldown = 40;
+        f->cooldown = 80;
         f->life = 20;
         f->movement = circle_player;
         f->weapon = circlegun;
-        f->speed = 2;
+        f->speed = 3;
         f->texture = "alien_brown";
 
         Enemy_type* g = new Enemy_type(); //better soldier
         g->bullet_range = 250;
-        g->bullet_size = 20;
+        g->bullet_size = 15;
         g->bullet_speed = 3;
-        g->cooldown = 30;
+        g->cooldown = 50;
         g->life = 20;
         g->movement = keep_distance_from_player;
         g->weapon = smart_pistol;
-        g->speed = 4;
+        g->speed = 5;
         g->texture = "alien_green";
 
         f->younger = e;
@@ -77,11 +77,8 @@ void gen_enemy_types()
         enemy_types.push_back(g);
     }
 
-    {
+    { //runner, worse soldier, sniper
         Enemy_type* e = new Enemy_type(); //runner
-        e->bullet_range = 20;
-        e->bullet_size = 10;
-        e->bullet_speed = 2;
         e->cooldown = 50;
         e->life = 10;
         e->movement = walk_towards_player;
@@ -104,11 +101,10 @@ void gen_enemy_types()
         g->bullet_range = 500;
         g->bullet_size = 20;
         g->bullet_speed = 7;
-        g->cooldown = 30;
+        g->cooldown = 80;
         g->life = 10;
         g->movement = none;
         g->weapon = smart_pistol;
-        g->speed = 1;
         g->texture = "alien_yellow";
 
         f->younger = e;
@@ -143,9 +139,9 @@ int main(int argc, char* args[])
 
     player = new Player();
 
-    new Obstacle(50,50,25,"House");
-    new Enemy(random(50,window[0]),random(50,window[1]),random_enemy_type());
-    new NPC(200,200,5,"npc_1");
+    new Obstacle(100,100,64,"house1");//+std::to_string(random(1,4)));
+    for (int i=0;i<=10;i++) new Enemy(random(50,map_size[0]),random(50,map_size[1]),random_enemy_type());
+    for (int i=0;i<=15;i++) new NPC(random(50,map_size[0]),random(50,map_size[1]),5,"npc_"+std::to_string(random(1,3)));
 
     SDL_Event e;
 	while (!breakk)
@@ -170,6 +166,9 @@ int main(int argc, char* args[])
                 player->shoot(e.button.x/zoom+camera[0], e.button.y/zoom+camera[1]);
             }
         }
+
+        camera[0] = std::max(0, std::min(map_size[0]-window[0], player->pos[0]-window[0]/2));
+        camera[1] = std::max(0, std::min(map_size[1]-window[1], player->pos[1]-window[1]/2));
 
         SDL_Rect r = {camera[0],camera[1],window[0],window[1]};
         SDL_RenderCopy(renderer,bg,&r,nullptr);

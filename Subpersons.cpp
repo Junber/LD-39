@@ -87,10 +87,12 @@ void Enemy::update()
     }
     else if (type->movement == circle_player)
     {
-        double angle = std::atan2(player->pos[1]-pos[1],player->pos[0]-pos[0]);
-        angle += type->speed*0.01;
-        pos[0] = player->pos[0]-std::cos(angle)*bullet_range*2/3;
-        pos[1] = player->pos[1]-std::sin(angle)*bullet_range*2/3;
+        double angle = std::atan2(dy,dx),
+            dist = std::sqrt(dx*dx+dy*dy);
+
+        angle += 2*std::asin(type->speed/(2*dist));
+        pos[0] = player->pos[0]-std::cos(angle)*dist;
+        pos[1] = player->pos[1]-std::sin(angle)*dist;
     }
 
     cur_cooldown--;
@@ -156,6 +158,12 @@ void Enemy::update()
     for (Obstacle* o: obstacles)
     {
         if (o->collides(this)) o->push_away(this);
+    }
+
+    for (Person* e: enemies)
+    {
+        if (e == this) break;
+        else if (e->pos[0] == pos[0] || e->pos[1] == pos[1]) pos[0]++;
     }
 
     switch(get_anim_type())
@@ -260,12 +268,6 @@ void Player::update()
         else rotation = std::atan2(y-pos[1],x-pos[0])*180/M_PI;
     }
 
-    if (moving)
-    {
-        camera[0] = std::max(0, std::min(map_size[0]-window[0], pos[0]-window[0]/2));
-        camera[1] = std::max(0, std::min(map_size[1]-window[1], pos[1]-window[1]/2));
-    }
-
     if (moving || (age==cane && get_anim_type()==1)) cur_anim_frame++;
     if (cur_cooldown>0) cur_cooldown--;
     if (iframes>0) iframes--;
@@ -293,7 +295,7 @@ void Player::shoot(int x, int y)
             new Laser(this,x,y);
             break;
         case life_drain:
-            new Bullet(this, 5.*dx/sum, 5.*dy/sum);
+            new Bullet(this, 15.*dx/sum, 15.*dy/sum);
             break;
         case squaregun:
             new Bullet(this, 10.*dx/sum, 10.*dy/sum);
@@ -325,9 +327,20 @@ void Player::kill()
     transition::time = 0;
     SDL_QueryTexture(transition::tex, nullptr, nullptr, &transition::size, &transition::h);
 
-    if (age>overpowered) max_cooldown=10;
-    if (age>laser) bullet_range = 30;
-    if (age>=squaregun) life_draining = false;
+    if (age>=laser) max_cooldown=10;
+
+    if (age>=squaregun)
+    {
+        life_draining = false;
+        bullet_size = 5;
+        bullet_range = 30;
+    }
+    else if (age==life_drain)
+    {
+        bullet_range = 30;
+        bullet_size = 10;
+    }
+
     if (age>=cane)
     {
         max_cooldown = 240;
@@ -340,7 +353,8 @@ void Player::kill()
 
     if (age>=dead)
     {
-        pos[0] += hitbox_offset;
+        pos[0] += hitbox_offset-camera[0];
+        pos[1] += -camera[1];
 
         SDL_SetRenderDrawColor(renderer,0,0,0,255);
         SDL_RenderClear(renderer);
