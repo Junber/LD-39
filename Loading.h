@@ -5,8 +5,8 @@
 #include <string>
 
 extern SDL_Renderer* renderer;
-extern bool breakk;
-extern int camera[2];
+extern bool breakk, fullscreen, vsync;
+extern int camera[2], zoom;
 extern SDL_Texture* bg;
 
 namespace transition
@@ -16,8 +16,7 @@ namespace transition
     extern int time, size, h;
 }
 
-const int zoom = 2;
-const int window[2] = {900,500};
+const int window[2] = {960,540};
 const int map_size[2] = {1000,1000};
 
 SDL_Texture* load_image(std::string s);
