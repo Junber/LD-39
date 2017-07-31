@@ -320,9 +320,12 @@ void Player::shoot(int x, int y)
             break;
 
         case life_drain:
-            lifepower -= 5;
-            new Bullet(this, 15.*dx/sum, 15.*dy/sum);
-            break;
+            if (lifepower > 5)
+            {
+                lifepower -= 5;
+                new Bullet(this, 15.*dx/sum, 15.*dy/sum);
+                break;
+            }
 
         case squaregun:
             if (ammo > 0)
@@ -514,7 +517,7 @@ int Player::get_anim_type()
 
 //NPC
 
-NPC::NPC(int x, int y, int hitbox, std::string s) : Person(x, y, hitbox, 0, 1, s)
+NPC::NPC(int x, int y, int hitbox, std::string s) : Person(x, y, hitbox, 1, 1, s)
 {
     dead = scared = false;
     friends.push_back(this);

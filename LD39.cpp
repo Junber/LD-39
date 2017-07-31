@@ -341,6 +341,8 @@ int main(int argc, char* args[])
             player->pos[1] = map_size[1]/2;
 
             gen_level();
+            for (Object* o: objects) o->update();
+
             player->kill();
         }
 
