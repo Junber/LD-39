@@ -102,6 +102,32 @@ void init_window()
     renderer = SDL_CreateRenderer(renderwindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 }
 
+void show_image(SDL_Texture* tex)
+{
+    SDL_Event e;
+	while (true)
+    {
+        while(SDL_PollEvent(&e))
+        {
+			if (e.type == SDL_QUIT)
+			{
+			    breakk = true;
+			    return;
+			}
+			else if (e.type == SDL_KEYDOWN)
+            {
+			    if (e.key.keysym.sym == SDLK_ESCAPE) breakk = true;
+			    return;
+			}
+			else if (e.type == SDL_MOUSEBUTTONDOWN) return;
+        }
+
+        SDL_RenderCopy(renderer,tex,nullptr,nullptr);
+        SDL_RenderPresent(renderer);
+        limit_fps();
+    }
+}
+
 int last_time;
 float wait;
 void limit_fps()
