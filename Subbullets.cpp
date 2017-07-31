@@ -99,7 +99,10 @@ bool Laser::collides(Object* o)
 
     if (abs(d) <= o->hitbox_size+hitbox_size)
     {
-        const int proj[2] = {int(o->pos[0]+d*n0[0]), int(o->pos[1]+d*n0[1])};
+        /*const int proj[2] = {int(o->pos[0]-d*n0[0]), int(o->pos[1]-d*n0[1])};
+        SDL_SetRenderDrawColor(renderer,255,255,255,255);
+        SDL_RenderDrawLine(renderer,o->pos[0]-camera[0],o->pos[1]-camera[1],proj[0]-camera[0],proj[1]-camera[1]);*/
+
         return (proj[0]+o->hitbox_size >= std::min(pos[0],end[0]) && proj[0]-o->hitbox_size <= std::max(pos[0],end[0]) &&
                 proj[1]+o->hitbox_size >= std::min(pos[1],end[1]) && proj[1]-o->hitbox_size <= std::max(pos[1],end[1]));
     }
@@ -118,17 +121,25 @@ void Laser::move()
     return (x<0?-x:x);
 }*/
 
+int sign2(int x)
+{
+    return (x<0?-1:1);
+}
+
 void Laser::hit_obstacle(Obstacle* o)
 {
     const int dx = end[0]-pos[0],
             dy = end[1]-pos[1],
             dr = dx*dx+dy*dy,
-            d = (pos[0]-o->pos[0])*(end[1]-o->pos[1])-(pos[1]-o->pos[1])*(end[0]-o->pos[0]);
+            d = (pos[0]-o->pos[0])*(end[1]-o->pos[1])-(pos[1]-o->pos[1])*(end[0]-o->pos[0]),
+            det = std::pow(o->obstacle_hitbox+hitbox_size, 2) * dr - d*d;
 
-    float root = std::sqrt(std::pow(o->obstacle_hitbox+hitbox_size, 2) * dr - d*d);
+    if (det < 0) return;
 
-    int sol1[2] = {(d*dy + sign(dy)*dx*root)/dr + o->pos[0] , (-d*dx + abs(dy)*root)/dr + o->pos[1]},
-        sol2[2] = {(d*dy - sign(dy)*dx*root)/dr + o->pos[0] , (-d*dx - abs(dy)*root)/dr + o->pos[1]},
+    float root = std::sqrt(det);
+
+    int sol1[2] = {(d*dy + sign2(dy)*dx*root)/dr + o->pos[0] , (-d*dx + abs(dy)*root)/dr + o->pos[1]},
+        sol2[2] = {(d*dy - sign2(dy)*dx*root)/dr + o->pos[0] , (-d*dx - abs(dy)*root)/dr + o->pos[1]},
         which;
 
     if      (abs(sol1[0]-pos[0]) < abs(sol2[0]-pos[0])) which = 0;
@@ -138,6 +149,8 @@ void Laser::hit_obstacle(Obstacle* o)
 
     end[0] = (which? sol2[0]:sol1[0]);
     end[1] = (which? sol2[1]:sol1[1]);
+
+    //std::cout << end[0] << " " << end[1]  << " " << root <<"\n";
 }
 
 //Shockwave
