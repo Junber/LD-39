@@ -129,7 +129,30 @@ Enemy_type* random_enemy_type()
 
 void gen_level()
 {
-    for (int i=0;i<=3;i++) new Obstacle(random(100,map_size[0]-100),random(100,map_size[1]-100),64,"house"+std::to_string(random(1,4)));
+    bg = make_background();
+
+    int houses[10][2];
+    for (int i=0;i<=5;i++)
+    {
+        int pos[2] = {random(100,map_size[0]-100),random(100,map_size[1]-100)};
+
+        bool ok = true;
+        for (int u=0;u<i;u++)
+        {
+            if (std::pow(houses[u][0]-pos[0],2) + std::pow(houses[u][1]-pos[1],2) < 140*140)
+            {
+                i--;
+                ok = false;
+                break;
+            }
+        }
+        if (!ok) continue;
+
+        houses[i][0] = pos[0];
+        houses[i][1] = pos[1];
+
+        new Obstacle(pos[0],pos[1],64,"house"+std::to_string(random(1,4)));
+    }
     for (int i=0;i<=10;i++) new Enemy(random(50,map_size[0]),random(50,map_size[1]),random_enemy_type());
     for (int i=0;i<=15;i++) new NPC(random(50,map_size[0]),random(50,map_size[1]),5,"npc_"+std::to_string(random(1,3)));
 }
@@ -142,8 +165,8 @@ int main(int argc, char* args[])
 
     init_window();
     SDL_RenderSetScale(renderer,zoom,zoom);
-    bg = make_background();
     gen_enemy_types();
+    gen_level();
 
     transition::transition = false;
 
@@ -254,9 +277,11 @@ int main(int argc, char* args[])
             for (Object* o: to_delete) delete o;
             to_delete.clear();
 
-            player->pos[0] = player->pos[1] = 0;
+            player->pos[0] = map_size[0]/2;
+            player->pos[1] = map_size[1]/2;
 
             gen_level();
+            player->kill();
         }
 
         SDL_RenderPresent(renderer);

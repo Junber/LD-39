@@ -215,7 +215,7 @@ void Enemy::get_life()
 
 //Player
 
-Player::Player() : Person(0,0, 15, 100,100, "age1")
+Player::Player() : Person(map_size[0]/2, map_size[1]/2, 15, 100,100, "age1")
 {
     is_player = true;
     speed = 2;
