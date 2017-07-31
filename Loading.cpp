@@ -7,8 +7,8 @@
 
 SDL_Window* renderwindow;
 SDL_Renderer* renderer;
-bool breakk = false, fullscreen=false, vsync=false;
-int camera[2] = {0,0}, zoom=1;
+bool breakk = false, fullscreen=true, vsync=false;
+int camera[2] = {0,0}, zoom=2, sfx_volume=64, music_volume=64;
 SDL_Texture* bg;
 
 namespace transition
@@ -133,6 +133,43 @@ void show_image(SDL_Texture* tex)
 
         limit_fps();
     }
+}
+
+std::map<std::string,Mix_Chunk*> loaded_sounds;
+Mix_Chunk* load_sound(std::string s)
+{
+    if (!loaded_sounds.count(s))
+    {
+        loaded_sounds[s] = Mix_LoadWAV(std::string("Data\\Sounds\\"+s+".wav").c_str());
+        Mix_VolumeChunk(loaded_sounds[s], sfx_volume);
+    }
+    return loaded_sounds[s];
+}
+
+std::map<std::string,Mix_Music*> loaded_music;
+Mix_Music* load_music(std::string s)
+{
+    if (!loaded_music.count(s)) loaded_music[s] = Mix_LoadMUS(std::string("Data\\Music\\"+s+".mp3").c_str());
+    return loaded_music[s];
+}
+
+void sound_init()
+{
+    Mix_Init(MIX_INIT_MP3);
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
+    Mix_VolumeMusic(music_volume);
+
+    //play_music(load_music("Shut-in"));
+}
+
+void play_sound(Mix_Chunk* s)
+{
+    if (s!=nullptr) Mix_PlayChannel(-1, s, 0);
+}
+
+void play_music(Mix_Music* s)
+{
+    if (s!= nullptr) Mix_PlayMusic(s,-1);
 }
 
 int last_time;

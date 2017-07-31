@@ -315,10 +315,12 @@ void Player::shoot(int x, int y)
         switch (age)
         {
         case overpowered:
+            //play_sound(load_sound("shockwave"));
             new Shockwave(this);
             break;
 
         case laser:
+            //play_sound(load_sound("laser"));
             new Laser(this,x,y);
             break;
 

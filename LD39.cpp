@@ -234,6 +234,8 @@ void load_options()
         if (splitted[0] == "fullscreen") fullscreen = std::stoi(splitted[1]);
         else if (splitted[0] == "vsync") vsync = std::stoi(splitted[1]);
         else if (splitted[0] == "zoom") zoom = std::stoi(splitted[1]);
+        else if (splitted[0] == "sfx_volume") sfx_volume = std::stoi(splitted[1]);
+        else if (splitted[0] == "music_volume") music_volume = std::stoi(splitted[1]);
     }
 }
 
@@ -244,6 +246,7 @@ int main(int argc, char* args[])
     SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_EVENTS);
     IMG_Init(IMG_INIT_PNG);
     random_init();
+    sound_init();
 
     init_window();
     SDL_RenderSetScale(renderer,zoom,zoom);
