@@ -35,6 +35,8 @@ public:
     ~Enemy();
     void update();
     void kill();
+    void get_life();
+    void change_type(Enemy_type* new_type);
     int get_anim_frame();
     int get_anim_type();
 };

@@ -36,6 +36,7 @@ public:
 
     Person(int x, int y, int hitbox, int life, int cooldown, std::string s);
     void attack(Person* attacker);
+    virtual void get_life() {};
     virtual void kill() {};
 };
 

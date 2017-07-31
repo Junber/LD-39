@@ -90,10 +90,14 @@ void Person::attack(Person* attacker)
     if (iframes<=0)
     {
         lifepower -= 10;
-        if (attacker->life_draining) attacker->lifepower += 5;
+        if (attacker->life_draining)
+        {
+            attacker->lifepower += 5;
+            attacker->get_life();
+        }
 
         if (lifepower < 0) kill();
-        std::cout << "ow" << lifepower << "\n";
+        //std::cout << "ow" << lifepower << "\n";
 
         iframes = 10;
     }

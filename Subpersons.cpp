@@ -33,15 +33,7 @@ Enemy::~Enemy()
 
 void Enemy::kill()
 {
-    if (type->younger && lifepower <= 0)
-    {
-        type = type->younger;
-        bullet_range = type->bullet_range;
-        bullet_size = type->bullet_size;
-        lifepower = type->life;
-        max_cooldown = type->cooldown;
-        tex = load_image(type->texture);
-    }
+    if (type->younger && lifepower <= 0) change_type(type->younger);
     else
     {
         remove_it(&enemies, (Person*) this);
@@ -203,6 +195,21 @@ int Enemy::get_anim_type()
     if (dead) return 0;
     else if (cur_cooldown < 3*max_cooldown/4) return 1;
     else return 2;
+}
+
+void Enemy::change_type(Enemy_type* new_type)
+{
+    type = new_type;
+    bullet_range = type->bullet_range;
+    bullet_size = type->bullet_size;
+    lifepower = type->life;
+    max_cooldown = type->cooldown;
+    tex = load_image(type->texture);
+}
+
+void Enemy::get_life()
+{
+    if (type->older) change_type(type->older);
 }
 
 //Player
