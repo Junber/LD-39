@@ -93,7 +93,7 @@ void gen_enemy_types()
         f->bullet_range = 250;
         f->bullet_size = 10;
         f->bullet_speed = 4;
-        f->cooldown = 40;
+        f->cooldown = 10;
         f->life = 20;
         f->movement = keep_distance_from_player;
         f->weapon = alien_pistol;

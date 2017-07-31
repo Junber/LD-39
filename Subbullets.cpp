@@ -43,6 +43,7 @@ void Bullet::deflect()
     enemy = !enemy;
     speed[0] = -speed[0];
     speed[1] = -speed[1];
+    shot_by = player;
 }
 
 //Melee
