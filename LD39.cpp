@@ -157,6 +157,44 @@ void gen_level()
     for (int i=0;i<=15;i++) new NPC(random(50,map_size[0]),random(50,map_size[1]),5,"npc_"+std::to_string(random(1,3)));
 }
 
+int render_number(int x)
+{
+    int digits;
+    if(x >= 10) digits = render_number(x / 10);
+    else digits = 0;
+
+    SDL_Rect dest = {120+5+digits*32, 32+5, 32, 32},
+        src = {0,(x%10)*32,32,32};
+    SDL_RenderCopy(renderer,load_image("numbers"),&src,&dest);
+
+    return digits+1;
+}
+
+void render_ui()
+{
+    SDL_Texture* tex;
+    if ((player->age == squaregun && !transition::transition) || player->age == pistol)
+    {
+        int digits = render_number(player->ammo);
+        SDL_Rect dest = {120+5+digits*32-16, 32+5-16, 64, 64},
+                src = {0,(player->age-squaregun-transition::transition)*32,32,32};
+        SDL_RenderCopy(renderer,load_image("ammo"),&src,&dest);
+
+        tex = load_image("lifebar");
+    }
+    else
+    {
+        tex = load_image("lifebar_no_ammo");
+    }
+
+    SDL_Rect health = {67+5,9+5,154*player->lifepower/100,7};
+    SDL_SetRenderDrawColor(renderer,255,0,0,255);
+    SDL_RenderFillRect(renderer,&health);
+
+    SDL_Rect r = {5,5,224,64};
+    SDL_RenderCopy(renderer,tex,nullptr,&r);
+}
+
 int main(int argc, char* args[])
 {
     SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_EVENTS);
@@ -205,6 +243,8 @@ int main(int argc, char* args[])
         if (transition::transition)
         {
             for (Object* o: objects) o->render();
+            render_ui();
+
             SDL_SetRenderDrawColor(renderer,0,0,0,100);
             SDL_Rect r = {0,0,window[0],window[1]};
             SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
@@ -262,6 +302,8 @@ int main(int argc, char* args[])
                 o->update();
                 o->render();
             }
+
+            render_ui();
         }
 
         for (Object* o: to_delete) delete o;

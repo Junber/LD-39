@@ -5,6 +5,7 @@
 #include "Obstacles.h"
 #include <iostream>
 #include "SDL2_gfxPrimitives.h"
+#include "Ammo_Drops.h"
 
 std::deque<Person*> enemies, dead_enemies, friends, dead_friends;
 Player* player;
@@ -60,6 +61,8 @@ void Enemy::update()
             SDL_SetRenderTarget(renderer, bg);
             SDL_RenderCopyEx(renderer,t,nullptr,&r,rotation,nullptr,SDL_FLIP_NONE);
             SDL_SetRenderTarget(renderer, nullptr);
+
+            new Ammo(pos[0],pos[1]);
         }
 
         if (cur_anim_frame > bullet_range+10 && cur_anim_frame >= 120 && !std::count(to_delete.begin(),to_delete.end(),this)) to_delete.push_back(this); //+10 actually not required but safety first
@@ -219,6 +222,7 @@ Player::Player() : Person(map_size[0]/2, map_size[1]/2, 15, 100,100, "age1")
 {
     is_player = true;
     speed = 2;
+    ammo = 6;
 
     cur_cooldown = 0;
 
@@ -300,25 +304,38 @@ void Player::shoot(int x, int y)
         case overpowered:
             new Shockwave(this);
             break;
+
         case laser:
             new Laser(this,x,y);
             break;
+
         case life_drain:
             new Bullet(this, 15.*dx/sum, 15.*dy/sum);
             break;
+
         case squaregun:
-            new Bullet(this, 10.*dx/sum, 10.*dy/sum);
-            for (int i=-1;i<=1;i++)
+            if (ammo > 0)
             {
-                for (int u=-1;u<=1;u++) new Bullet(this, 10.*dx/sum+i, 10.*dy/sum+u);
+                for (int i=-1;i<=1;i++)
+                {
+                    for (int u=-1;u<=1;u++) new Bullet(this, 10.*dx/sum+i, 10.*dy/sum+u);
+                }
+                ammo--;
             }
             break;
+
         case pistol:
-            new Bullet(this, 10.*dx/sum, 10.*dy/sum);
+            if (ammo > 0)
+            {
+                new Bullet(this, 10.*dx/sum, 10.*dy/sum);
+                ammo--;
+            }
             break;
+
         case cane:
             //the Melee is spawned later
             break;
+
         case dead:
             break;
         }
@@ -344,6 +361,8 @@ void Player::kill()
         life_draining = false;
         bullet_size = 5;
         bullet_range = 30;
+
+        ammo = 6;
     }
     else if (age==life_drain)
     {

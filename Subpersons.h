@@ -50,7 +50,7 @@ class Player: public Person
 {
 public:
     Ages age;
-    int speed, last_pos[2];
+    int speed, last_pos[2], ammo;
     const int hitbox_offset = 5;
 
     Player();
