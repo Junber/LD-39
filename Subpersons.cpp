@@ -62,7 +62,7 @@ void Enemy::update()
             SDL_SetRenderTarget(renderer, nullptr);
         }
 
-        if (cur_anim_frame > bullet_range*2 && cur_anim_frame >= 120) to_delete.push_back(this); //*2 actually not required but safety first
+        if (cur_anim_frame > bullet_range+10 && cur_anim_frame >= 120 && !std::count(to_delete.begin(),to_delete.end(),this)) to_delete.push_back(this); //+10 actually not required but safety first
         return;
     }
 
@@ -97,9 +97,10 @@ void Enemy::update()
             if (dx*dx+dy*dy < bullet_size) new Melee(this);
             else cur_cooldown = 0;
         }
-        if (type->weapon == alien_pistol)
+        else if (type->weapon == alien_pistol)
         {
-            new Bullet(this,type->bullet_speed*dx/sum,type->bullet_speed*dy/sum);
+            if (!sum) new Bullet(this,type->bullet_speed,0);
+            else new Bullet(this,type->bullet_speed*dx/sum,type->bullet_speed*dy/sum);
         }
         else if (type->weapon == smart_pistol)
         {

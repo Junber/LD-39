@@ -143,29 +143,28 @@ void Base_bullet::update()
     {
         for (Obstacle* o: obstacles)
         {
-            if (o->collides(this)) to_delete.push_back(this);
+            if (o->collides(this))
+            {
+                to_delete.push_back(this);
+                return;
+            }
         }
     }
 
-    bool stop = false;
     for (Person* f: friends)
     {
-        if (collides(f)) stop = exec_hit(f);
-        if (stop) break;
+        if (collides(f) && exec_hit(f)) return;
     }
 
-    if (!stop)
+    if (enemy)
     {
-        if (enemy)
+        if (collides(player) && exec_hit(player)) return;
+    }
+    else
+    {
+        for (Person* e: enemies)
         {
-            if (collides(player)) exec_hit(player);
-        }
-        else
-        {
-            for (Person* e: enemies)
-            {
-                if (collides(e) && exec_hit(e)) break;
-            }
+            if (collides(e) && exec_hit(e)) return;
         }
     }
 

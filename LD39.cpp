@@ -126,6 +126,13 @@ Enemy_type* random_enemy_type()
     return enemy_types[random(0,enemy_types.size()-1)];
 }
 
+void gen_level()
+{
+    for (int i=0;i<=3;i++) new Obstacle(random(100,map_size[0]-100),random(100,map_size[1]-100),64,"house"+std::to_string(random(1,4)));
+    for (int i=0;i<=10;i++) new Enemy(random(50,map_size[0]),random(50,map_size[1]),random_enemy_type());
+    for (int i=0;i<=15;i++) new NPC(random(50,map_size[0]),random(50,map_size[1]),5,"npc_"+std::to_string(random(1,3)));
+}
+
 int main(int argc, char* args[])
 {
     SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_EVENTS);
@@ -140,10 +147,6 @@ int main(int argc, char* args[])
     transition::transition = false;
 
     player = new Player();
-
-    new Obstacle(100,100,64,"house"+std::to_string(random(1,4)));
-    //for (int i=0;i<=10;i++) new Enemy(random(50,map_size[0]),random(50,map_size[1]),random_enemy_type());
-    for (int i=0;i<=15;i++) new NPC(random(50,map_size[0]),random(50,map_size[1]),5,"npc_"+std::to_string(random(1,3)));
 
     SDL_Event e;
 	while (!breakk)
@@ -233,6 +236,21 @@ int main(int argc, char* args[])
 
         for (Object* o: to_delete) delete o;
         to_delete.clear();
+
+        if (enemies.empty() && dead_enemies.empty())
+        {
+            for (Object* o: objects)
+            {
+                if (o!=player) to_delete.push_back(o);
+            }
+
+            for (Object* o: to_delete) delete o;
+            to_delete.clear();
+
+            player->pos[0] = player->pos[1] = 0;
+
+            gen_level();
+        }
 
         SDL_RenderPresent(renderer);
         limit_fps();
