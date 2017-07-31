@@ -273,7 +273,7 @@ void Player::update()
 
         if (age == cane && cur_cooldown == max_cooldown-25/speed) new Melee(this);
 
-        if (age == cane && cur_cooldown <= max_cooldown-25/speed && cur_cooldown > 3*max_cooldown/4) rotation += 360/(max_cooldown/4-25/speed);
+        if (age == cane && cur_cooldown <= max_cooldown-25/speed && cur_cooldown > max_cooldown/2) rotation += 360/(max_cooldown/2-25/speed);
         else rotation = std::atan2(y-pos[1],x-pos[0])*180/M_PI;
     }
 
@@ -336,16 +336,18 @@ void Player::kill()
     transition::time = 0;
     SDL_QueryTexture(transition::tex, nullptr, nullptr, &transition::size, &transition::h);
 
-    if (age>=laser) max_cooldown=10;
+    if (age>=laser) max_cooldown=20;
 
     if (age>=squaregun)
     {
+        max_cooldown = 15;
         life_draining = false;
         bullet_size = 5;
         bullet_range = 30;
     }
     else if (age==life_drain)
     {
+        max_cooldown = 10;
         life_draining = true;
         bullet_range = 30;
         bullet_size = 10;
@@ -353,7 +355,7 @@ void Player::kill()
 
     if (age>=cane)
     {
-        max_cooldown = 240;
+        max_cooldown = 120;
         bullet_size = 15;
         bullet_range = max_cooldown/4;
     }
@@ -475,12 +477,9 @@ int Player::get_anim_frame()
 
 int Player::get_anim_type()
 {
-    if (age==overpowered || age == laser) return (cur_cooldown > 0);
-    else
-    {
-        if (age == squaregun || age == pistol || cur_cooldown < 3*max_cooldown/4) return 0;
-        else return 1;
-    }
+    if (age == squaregun || age == pistol) return 0;
+    else if (age==cane) return (cur_cooldown > max_cooldown/2);
+    else return (cur_cooldown > 0);
 }
 
 //NPC
