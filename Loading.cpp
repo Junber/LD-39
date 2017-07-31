@@ -7,8 +7,8 @@
 
 SDL_Window* renderwindow;
 SDL_Renderer* renderer;
-bool breakk = false;
-int camera[2] = {0,0};
+bool breakk = false, fullscreen=false, vsync=false;
+int camera[2] = {0,0}, zoom=1;
 SDL_Texture* bg;
 
 namespace transition
@@ -98,8 +98,8 @@ SDL_Texture* make_background()
 
 void init_window()
 {
-    renderwindow = SDL_CreateWindow("LD-39", 50, 30, window[0]*zoom, window[1]*zoom, SDL_WINDOW_SHOWN);
-    renderer = SDL_CreateRenderer(renderwindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    renderwindow = SDL_CreateWindow("LD-39", 50, 30, window[0]*zoom, window[1]*zoom, SDL_WINDOW_SHOWN | (fullscreen*SDL_WINDOW_FULLSCREEN));
+    renderer = SDL_CreateRenderer(renderwindow, -1, SDL_RENDERER_ACCELERATED | (vsync*SDL_RENDERER_PRESENTVSYNC));
 }
 
 void show_image(SDL_Texture* tex)

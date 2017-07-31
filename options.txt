@@ -1,0 +1,3 @@
+fullscreen:1
+zoom:2
+vsync:0

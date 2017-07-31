@@ -7,6 +7,7 @@
 #include <random>
 #include <time.h>
 #include <SDL2_gfxPrimitives.h>
+#include <fstream>
 
 #include "Loading.h"
 #include "Base_Classes.h"
@@ -199,8 +200,47 @@ void render_ui()
     SDL_RenderCopy(renderer,load_image("portraits"),&src,&r);
 }
 
+std::deque<std::string> split(std::string s, char seperator)
+{
+    std::deque<std::string> ret;
+    ret.push_back("");
+    for (char c: s)
+    {
+        if (c == seperator)
+        {
+            ret.push_back("");
+        }
+        else
+        {
+            ret[ret.size()-1] += c;
+        }
+    }
+
+    return ret;
+}
+
+void load_options()
+{
+    std::fstream file;
+    file.open("options.txt");
+
+    while (!file.eof())
+    {
+        std::string line;
+        std::getline(file,line);
+
+        auto splitted = split(line,':');
+
+        if (splitted[0] == "fullscreen") fullscreen = std::stoi(splitted[1]);
+        else if (splitted[0] == "vsync") vsync = std::stoi(splitted[1]);
+        else if (splitted[0] == "zoom") zoom = std::stoi(splitted[1]);
+    }
+}
+
 int main(int argc, char* args[])
 {
+    load_options();
+
     SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_EVENTS);
     IMG_Init(IMG_INIT_PNG);
     random_init();
