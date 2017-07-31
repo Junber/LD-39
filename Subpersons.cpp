@@ -554,13 +554,14 @@ void NPC::update()
         iframes = 0;
         if (cur_anim_frame > 25/(2+2*scared)-1)
         {
+            if (player->age == pistol || player->age == squaregun) new Ammo(pos[0],pos[1],1);
+
             SDL_SetRenderTarget(renderer,bg);
             pos[0] += camera[0];
             pos[1] += camera[1];
             render();
             SDL_SetRenderTarget(renderer,nullptr);
             to_delete.push_back(this);
-            if (player->age == pistol || player->age == squaregun) new Ammo(pos[0],pos[1],1);
         }
         return;
     }
