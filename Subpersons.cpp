@@ -209,6 +209,7 @@ int Enemy::get_anim_type()
 void Enemy::change_type(Enemy_type* new_type)
 {
     type = new_type;
+    cur_cooldown = 0;
     bullet_range = type->bullet_range;
     bullet_size = type->bullet_size;
     lifepower = type->life;
@@ -643,10 +644,26 @@ void NPC::update()
         }
     }
 
-    if (pos[0] < obstacle_hitbox) pos[0] = obstacle_hitbox;
-    else if (pos[0] > map_size[0]-obstacle_hitbox) pos[0] = map_size[0]-obstacle_hitbox;
-    if (pos[1] < obstacle_hitbox) pos[1] = obstacle_hitbox;
-    else if (pos[1] > map_size[1]-obstacle_hitbox) pos[1] = map_size[1]-obstacle_hitbox;
+    if (pos[0] < obstacle_hitbox)
+    {
+        pos[0] = obstacle_hitbox;
+        circle_around[0] = circle_radius+obstacle_hitbox;
+    }
+    else if (pos[0] > map_size[0]-obstacle_hitbox)
+    {
+        pos[0] = map_size[0]-obstacle_hitbox;
+        circle_around[0] = map_size[0]-circle_radius-obstacle_hitbox;
+    }
+    if (pos[1] < obstacle_hitbox)
+    {
+        pos[1] = obstacle_hitbox;
+        circle_around[1] = circle_radius+obstacle_hitbox;
+    }
+    else if (pos[1] > map_size[1]-obstacle_hitbox)
+    {
+        pos[1] = map_size[1]-obstacle_hitbox;
+        circle_around[1] = map_size[1]-circle_radius-obstacle_hitbox;
+    }
 
     rotation = std::atan2(real_pos[1]-last_pos[1],real_pos[0]-last_pos[0])*180/M_PI;
 

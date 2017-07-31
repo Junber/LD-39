@@ -131,7 +131,7 @@ void gen_level()
 {
     bg = make_background();
 
-    int houses[10][2];
+    int houses[5][2];
     for (int i=0;i<=5;i++)
     {
         int pos[2] = {random(100,map_size[0]-100),random(100,map_size[1]-100)};
