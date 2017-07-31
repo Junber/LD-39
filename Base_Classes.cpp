@@ -91,6 +91,7 @@ void Person::attack(Person* attacker)
 {
     if (iframes<=0)
     {
+        if (this == player) screen_shake+=15;
         lifepower -= 10;
         if (attacker->life_draining)
         {

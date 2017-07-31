@@ -7,8 +7,8 @@
 
 SDL_Window* renderwindow;
 SDL_Renderer* renderer;
-bool breakk = false, fullscreen=true, vsync=false;
-int camera[2] = {0,0}, zoom=2, sfx_volume=64, music_volume=64;
+bool breakk = false, fullscreen=true, vsync=false, screen_shake_enabled=true;
+int camera[2] = {0,0}, zoom=2, sfx_volume=64, music_volume=64, screen_shake=0;
 SDL_Texture* bg;
 
 namespace transition

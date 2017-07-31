@@ -6,8 +6,8 @@
 #include <SDL_mixer.h>
 
 extern SDL_Renderer* renderer;
-extern bool breakk, fullscreen, vsync;
-extern int camera[2], zoom, sfx_volume, music_volume;
+extern bool breakk, fullscreen, vsync, screen_shake_enabled;
+extern int camera[2], zoom, sfx_volume, music_volume, screen_shake;
 extern SDL_Texture* bg;
 
 namespace transition

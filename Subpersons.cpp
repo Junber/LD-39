@@ -315,6 +315,7 @@ void Player::shoot(int x, int y)
         switch (age)
         {
         case overpowered:
+            if (this == player) screen_shake+=50;
             //play_sound(load_sound("shockwave"));
             new Shockwave(this);
             break;
@@ -335,6 +336,7 @@ void Player::shoot(int x, int y)
         case squaregun:
             if (ammo > 0)
             {
+                screen_shake+=10;
                 for (int i=-1;i<=1;i++)
                 {
                     for (int u=-1;u<=1;u++) new Bullet(this, 10.*dx/sum+i, 10.*dy/sum+u);
@@ -346,6 +348,7 @@ void Player::shoot(int x, int y)
         case pistol:
             if (ammo > 0)
             {
+                screen_shake+=5;
                 new Bullet(this, 10.*dx/sum, 10.*dy/sum);
                 ammo--;
             }

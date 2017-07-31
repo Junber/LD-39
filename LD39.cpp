@@ -233,6 +233,7 @@ void load_options()
 
         if (splitted[0] == "fullscreen") fullscreen = std::stoi(splitted[1]);
         else if (splitted[0] == "vsync") vsync = std::stoi(splitted[1]);
+        else if (splitted[0] == "screen_shake") screen_shake_enabled = std::stoi(splitted[1]);
         else if (splitted[0] == "zoom") zoom = std::stoi(splitted[1]);
         else if (splitted[0] == "sfx_volume") sfx_volume = std::stoi(splitted[1]);
         else if (splitted[0] == "music_volume") music_volume = std::stoi(splitted[1]);
@@ -300,8 +301,10 @@ int main(int argc, char* args[])
             }
         }
 
-        camera[0] = std::max(0, std::min(map_size[0]-window[0], player->pos[0]-window[0]/2));
-        camera[1] = std::max(0, std::min(map_size[1]-window[1], player->pos[1]-window[1]/2));
+        camera[0] = std::max(0, std::min(map_size[0]-window[0], player->pos[0]-window[0]/2))+screen_shake_enabled*screen_shake*random(-10,10)/10;
+        camera[1] = std::max(0, std::min(map_size[1]-window[1], player->pos[1]-window[1]/2))+screen_shake_enabled*screen_shake*random(-10,10)/10;
+
+        if (screen_shake) screen_shake--;
 
         SDL_Rect r = {camera[0],camera[1],window[0],window[1]};
         SDL_RenderCopy(renderer,bg,&r,nullptr);
@@ -374,6 +377,14 @@ int main(int argc, char* args[])
             }
 
             render_ui();
+        }
+
+        if (player->age == cane && player->lifepower <= 30)
+        {
+            r.x = r.y = 0;
+            SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
+            SDL_SetRenderDrawColor(renderer,0,0,0,5*(40-player->lifepower));
+            SDL_RenderFillRect(renderer,&r);
         }
 
         for (Object* o: to_delete) delete o;
