@@ -94,7 +94,7 @@ void Enemy::update()
 
         if (type->weapon == melee)
         {
-            if (dx*dx+dy*dy < bullet_range) new Melee(this);
+            if (dx*dx+dy*dy < bullet_size) new Melee(this);
             else cur_cooldown = 0;
         }
         if (type->weapon == alien_pistol)
@@ -228,6 +228,7 @@ Player::Player() : Person(0,0, 15, 100,100, "age1")
 
     rotate_center = {render_size[0]/2-hitbox_offset,render_size[1]/2};
 
+    life_draining = false;
     age = overpowered;
     hitbox_size = 4;
 }
@@ -344,6 +345,7 @@ void Player::kill()
     }
     else if (age==life_drain)
     {
+        life_draining = true;
         bullet_range = 30;
         bullet_size = 10;
     }

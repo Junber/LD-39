@@ -79,6 +79,8 @@ void gen_enemy_types()
 
     { //runner, worse soldier, sniper
         Enemy_type* e = new Enemy_type(); //runner
+        e->bullet_range = 10;
+        e->bullet_size = 20;
         e->cooldown = 50;
         e->life = 10;
         e->movement = walk_towards_player;
