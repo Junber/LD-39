@@ -324,8 +324,8 @@ void Player::shoot(int x, int y)
             {
                 lifepower -= 5;
                 new Bullet(this, 15.*dx/sum, 15.*dy/sum);
-                break;
             }
+            break;
 
         case squaregun:
             if (ammo > 0)
