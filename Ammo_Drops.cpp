@@ -3,9 +3,10 @@
 #include "Subpersons.h"
 #include "Loading.h"
 
-Ammo::Ammo(int x, int y) : Object(x,y,15,"Ammo")
+Ammo::Ammo(int x, int y, int ammo_amount) : Object(x,y,15,"Ammo")
 {
     render_size[0] = render_size[1] = 32;
+    amount = ammo_amount;
 }
 
 void Ammo::update()
@@ -14,7 +15,7 @@ void Ammo::update()
 
     if (player->collides(this))
     {
-        player->ammo += 6;
+        player->ammo += amount;
         to_delete.push_back(this);
     }
 }

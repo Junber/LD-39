@@ -131,7 +131,7 @@ void gen_level()
 {
     bg = make_background();
 
-    int houses[5][2];
+    int houses[6][2];
     for (int i=0;i<=5;i++)
     {
         int pos[2] = {random(100,map_size[0]-100),random(100,map_size[1]-100)};
@@ -153,7 +153,7 @@ void gen_level()
 
         new Obstacle(pos[0],pos[1],64,"house"+std::to_string(random(1,4)));
     }
-    for (int i=0;i<=10;i++) new Enemy(random(50,map_size[0]),random(50,map_size[1]),random_enemy_type());
+    for (int i=0;i<=8;i++) new Enemy(random(50,map_size[0]),random(50,map_size[1]),random_enemy_type());
     for (int i=0;i<=15;i++) new NPC(random(50,map_size[0]),random(50,map_size[1]),5,"npc_"+std::to_string(random(1,3)));
 }
 

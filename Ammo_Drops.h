@@ -6,7 +6,9 @@
 class Ammo: public Object
 {
 public:
-    Ammo(int x, int y);
+    int amount;
+
+    Ammo(int x, int y, int ammo_amount);
     void update();
     int get_anim_frame();
 };
