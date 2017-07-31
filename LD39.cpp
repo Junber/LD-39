@@ -6,6 +6,7 @@
 #include <iostream>
 #include <random>
 #include <time.h>
+#include <SDL2_gfxPrimitives.h>
 
 #include "Loading.h"
 #include "Base_Classes.h"
@@ -219,6 +220,12 @@ int main(int argc, char* args[])
                 p = {10,17};
                 dest.x += 6;
                 dest.y += 1;
+            }
+
+
+            if (player->age == squaregun)
+            {
+                filledCircleRGBA(renderer,dest.x+p.x,dest.y+p.y,25,255,255,255,100);
             }
 
             SDL_RenderCopyEx(renderer,transition::tex,&src,&dest,player->rotation,&p,SDL_FLIP_NONE);
