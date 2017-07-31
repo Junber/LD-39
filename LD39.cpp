@@ -139,7 +139,7 @@ int main(int argc, char* args[])
 
     player = new Player();
 
-    new Obstacle(100,100,64,"house1");//+std::to_string(random(1,4)));
+    new Obstacle(100,100,64,"house"+std::to_string(random(1,4)));
     for (int i=0;i<=10;i++) new Enemy(random(50,map_size[0]),random(50,map_size[1]),random_enemy_type());
     for (int i=0;i<=15;i++) new NPC(random(50,map_size[0]),random(50,map_size[1]),5,"npc_"+std::to_string(random(1,3)));
 
