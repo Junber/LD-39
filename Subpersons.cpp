@@ -632,7 +632,15 @@ void NPC::update()
 
     for (Obstacle* o: obstacles)
     {
-        if (o->collides(this)) o->push_away(this);
+        if (o->collides(this))
+        {
+            o->push_away(this);
+
+            int dx = pos[0]-o->pos[0], dy = pos[1]-o->pos[1], sum = abs(dx)+abs(dy);
+
+            circle_around[0] = pos[0]+circle_radius*dx/sum;
+            circle_around[1] = pos[1]+circle_radius*dy/sum;
+        }
     }
 
     if (pos[0] < obstacle_hitbox) pos[0] = obstacle_hitbox;
