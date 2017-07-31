@@ -534,7 +534,7 @@ void NPC::update()
     for (Person* p: enemies)
     {
         const int d = std::pow(pos[0]-p->pos[0],2)+std::pow(pos[1]-p->pos[1],2);
-        if (d < 2500)
+        if (d < 5000)
         {
             scared = true;
             run_from = p;
@@ -577,11 +577,21 @@ void NPC::update()
     {
         int dx = run_from->pos[0]-pos[0], dy = run_from->pos[1]-pos[1], sum = abs(dx)+abs(dy);
 
-        pos[0] -= 4*dx/sum;
-        pos[1] -= 4*dy/sum;
+        if (!sum)
+        {
+            pos[0] += 4;
 
-        circle_around[0] = pos[0]+circle_radius*dx/sum;
-        circle_around[1] = pos[1]+circle_radius*dy/sum;
+            circle_around[0] = pos[0]+circle_radius;
+            circle_around[1] = pos[1];
+        }
+        else
+        {
+            pos[0] -= 4*dx/sum;
+            pos[1] -= 4*dy/sum;
+
+            circle_around[0] = pos[0]+circle_radius*dx/sum;
+            circle_around[1] = pos[1]+circle_radius*dy/sum;
+        }
 
         real_pos[0] = pos[0];
         real_pos[1] = pos[1];
