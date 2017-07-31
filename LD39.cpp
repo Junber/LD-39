@@ -193,6 +193,10 @@ void render_ui()
 
     SDL_Rect r = {5,5,224,64};
     SDL_RenderCopy(renderer,tex,nullptr,&r);
+
+    r.w = 64;
+    SDL_Rect src = {0,(player->age-transition::transition)*64,64,64};
+    SDL_RenderCopy(renderer,load_image("portraits"),&src,&r);
 }
 
 int main(int argc, char* args[])
@@ -329,21 +333,37 @@ int main(int argc, char* args[])
 
         if (enemies.empty() && (player->age==overpowered || dead_enemies.empty()))
         {
-            for (Object* o: objects)
+            bool animations_finished = true;
+            if (!dead_enemies.empty())
             {
-                if (o!=player) to_delete.push_back(o);
+                for (Person* e: dead_enemies)
+                {
+                    if (e->cur_anim_frame < 120)
+                    {
+                        animations_finished = false;
+                        break;
+                    }
+                }
             }
 
-            for (Object* o: to_delete) delete o;
-            to_delete.clear();
+            if (animations_finished)
+            {
+                for (Object* o: objects)
+                {
+                    if (o!=player) to_delete.push_back(o);
+                }
 
-            player->pos[0] = map_size[0]/2;
-            player->pos[1] = map_size[1]/2;
+                for (Object* o: to_delete) delete o;
+                to_delete.clear();
 
-            gen_level();
-            for (Object* o: objects) o->update();
+                player->pos[0] = map_size[0]/2;
+                player->pos[1] = map_size[1]/2;
 
-            player->kill();
+                gen_level();
+                for (Object* o: objects) o->update();
+
+                player->kill();
+            }
         }
 
         SDL_RenderPresent(renderer);
