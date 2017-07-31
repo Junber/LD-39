@@ -153,8 +153,8 @@ void gen_level()
 
         new Obstacle(pos[0],pos[1],64,"house"+std::to_string(random(1,4)));
     }
-    for (int i=0;i<=1;i++) new Enemy(random(50,map_size[0]),random(50,map_size[1]),random_enemy_type());
-    for (int i=0;i<=1;i++) new NPC(random(50,map_size[0]),random(50,map_size[1]),5,"npc_"+std::to_string(random(1,3)));
+    for (int i=0;i<=10;i++) new Enemy(random(50,map_size[0]),random(50,map_size[1]),random_enemy_type());
+    for (int i=0;i<=15;i++) new NPC(random(50,map_size[0]),random(50,map_size[1]),5,"npc_"+std::to_string(random(1,3)));
 }
 
 int render_number(int x)

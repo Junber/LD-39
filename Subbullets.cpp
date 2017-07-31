@@ -99,8 +99,8 @@ bool Laser::collides(Object* o)
 
     if (abs(d) <= o->hitbox_size+hitbox_size)
     {
-        /*const int proj[2] = {int(o->pos[0]-d*n0[0]), int(o->pos[1]-d*n0[1])};
-        SDL_SetRenderDrawColor(renderer,255,255,255,255);
+        const int proj[2] = {int(o->pos[0]-d*n0[0]), int(o->pos[1]-d*n0[1])};
+        /*SDL_SetRenderDrawColor(renderer,255,255,255,255);
         SDL_RenderDrawLine(renderer,o->pos[0]-camera[0],o->pos[1]-camera[1],proj[0]-camera[0],proj[1]-camera[1]);*/
 
         return (proj[0]+o->hitbox_size >= std::min(pos[0],end[0]) && proj[0]-o->hitbox_size <= std::max(pos[0],end[0]) &&
