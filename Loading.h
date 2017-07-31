@@ -30,6 +30,7 @@ Mix_Music* load_music(std::string s);
 void sound_init();
 void play_sound(Mix_Chunk* s);
 void play_music(Mix_Music* s);
+void set_loop(Mix_Music* s);
 
 void init_window();
 void limit_fps();

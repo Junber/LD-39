@@ -159,7 +159,8 @@ void sound_init()
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     Mix_VolumeMusic(music_volume);
 
-    //play_music(load_music("Shut-in"));
+    play_music(load_music("Lasershow Superhero"));
+    set_loop(load_music("Lasershow Superhero (Loop)"));
 }
 
 void play_sound(Mix_Chunk* s)
@@ -167,9 +168,22 @@ void play_sound(Mix_Chunk* s)
     if (s!=nullptr) Mix_PlayChannel(-1, s, 0);
 }
 
+Mix_Music* looping;
+
+void hook()
+{
+    Mix_PlayMusic(looping,-1);
+}
+
 void play_music(Mix_Music* s)
 {
     if (s!= nullptr) Mix_PlayMusic(s,-1);
+    Mix_HookMusicFinished(hook);
+}
+
+void set_loop(Mix_Music* s)
+{
+    looping = s;
 }
 
 int last_time;

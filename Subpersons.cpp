@@ -375,6 +375,17 @@ void Player::kill()
     transition::time = 0;
     SDL_QueryTexture(transition::tex, nullptr, nullptr, &transition::size, &transition::h);
 
+    if (age == squaregun)
+    {
+        play_music(load_music("Second Track"));
+        set_loop(load_music("Second Track (Loop)"));
+    }
+    else if (age == cane)
+    {
+        play_music(load_music("Last Motherfucking Level"));
+        set_loop(load_music("Last Motherfucking Level (Loop)"));
+    }
+
     if (age>=laser) max_cooldown=20;
 
     if (age>=squaregun)
