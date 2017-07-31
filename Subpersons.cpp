@@ -175,6 +175,11 @@ void Enemy::update()
         break;
     }
 
+    if (pos[0] < obstacle_hitbox) pos[0] = obstacle_hitbox;
+    else if (pos[0] > map_size[0]-obstacle_hitbox) pos[0] = map_size[0]-obstacle_hitbox;
+    if (pos[1] < obstacle_hitbox) pos[1] = obstacle_hitbox;
+    else if (pos[1] > map_size[1]-obstacle_hitbox) pos[1] = map_size[1]-obstacle_hitbox;
+
     if (last_pos[0] != pos[0] || last_pos[1] != pos[1]) rotation = std::atan2(pos[1]-last_pos[1],pos[0]-last_pos[0])*180/M_PI;
     else rotation = std::atan2(player->pos[1]-pos[1],player->pos[0]-pos[0])*180/M_PI;
 }
@@ -289,6 +294,11 @@ void Player::update()
     {
         if (o->collides(this)) o->push_away(this);
     }
+
+    if (pos[0] < obstacle_hitbox) pos[0] = obstacle_hitbox;
+    else if (pos[0] > map_size[0]-obstacle_hitbox) pos[0] = map_size[0]-obstacle_hitbox;
+    if (pos[1] < obstacle_hitbox) pos[1] = obstacle_hitbox;
+    else if (pos[1] > map_size[1]-obstacle_hitbox) pos[1] = map_size[1]-obstacle_hitbox;
 }
 
 void Player::shoot(int x, int y)
@@ -310,7 +320,7 @@ void Player::shoot(int x, int y)
             break;
 
         case life_drain:
-            lifepower--;
+            lifepower -= 5;
             new Bullet(this, 15.*dx/sum, 15.*dy/sum);
             break;
 
@@ -621,6 +631,11 @@ void NPC::update()
     {
         if (o->collides(this)) o->push_away(this);
     }
+
+    if (pos[0] < obstacle_hitbox) pos[0] = obstacle_hitbox;
+    else if (pos[0] > map_size[0]-obstacle_hitbox) pos[0] = map_size[0]-obstacle_hitbox;
+    if (pos[1] < obstacle_hitbox) pos[1] = obstacle_hitbox;
+    else if (pos[1] > map_size[1]-obstacle_hitbox) pos[1] = map_size[1]-obstacle_hitbox;
 
     rotation = std::atan2(real_pos[1]-last_pos[1],real_pos[0]-last_pos[0])*180/M_PI;
 
