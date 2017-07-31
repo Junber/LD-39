@@ -327,7 +327,7 @@ int main(int argc, char* args[])
         for (Object* o: to_delete) delete o;
         to_delete.clear();
 
-        if (enemies.empty() && dead_enemies.empty())
+        if (enemies.empty() && (player->age==overpowered || dead_enemies.empty()))
         {
             for (Object* o: objects)
             {

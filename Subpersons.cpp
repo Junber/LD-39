@@ -9,7 +9,7 @@
 
 std::deque<Person*> enemies, dead_enemies, friends, dead_friends;
 Player* player;
-bool show_hitbox = true;
+bool show_hitbox = false;
 
 //Enemy
 
