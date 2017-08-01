@@ -571,7 +571,7 @@ void NPC::update()
         iframes = 0;
         if (cur_anim_frame > 25/(2+2*scared)-1)
         {
-            if (player->age == pistol || player->age == squaregun) new Ammo(pos[0],pos[1],1);
+            if (player->age == pistol || player->age == squaregun) new Ammo(pos[0],pos[1],2);
 
             SDL_SetRenderTarget(renderer,bg);
             pos[0] += camera[0];

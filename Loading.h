@@ -36,6 +36,7 @@ void init_window();
 void limit_fps();
 int random(int x, int y);
 void show_image(SDL_Texture* tex);
+void help_screen();
 //int sign(int x);
 
 #endif // _LOADING

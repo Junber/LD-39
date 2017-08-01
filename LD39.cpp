@@ -274,6 +274,10 @@ int main(int argc, char* args[])
                     breakk = true;
                     break;
 
+                case SDLK_h:
+                    help_screen();
+                    break;
+
                 #ifdef DEBUG
                 case SDLK_F1:
                     player->kill();

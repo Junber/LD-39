@@ -135,6 +135,59 @@ void show_image(SDL_Texture* tex)
     }
 }
 
+void help_screen()
+{
+    SDL_Event e;
+    int frames_passed = 0;
+	while (true)
+    {
+        while(SDL_PollEvent(&e))
+        {
+			if (e.type == SDL_QUIT)
+			{
+			    breakk = true;
+			    return;
+			}
+			else if (e.type == SDL_KEYDOWN)
+            {
+			    if (e.key.keysym.sym == SDLK_ESCAPE)
+			    {
+			        breakk = true;
+			        return;
+			    }
+			    if (frames_passed > 30) return;
+			}
+			else if (e.type == SDL_MOUSEBUTTONDOWN && frames_passed > 30) return;
+        }
+
+        SDL_RenderCopy(renderer,load_image("help"),nullptr,nullptr);
+
+        SDL_Rect dest = {20,90,34,34},
+                src = {34,34*((frames_passed/10)%8),34,34};
+        SDL_RenderCopy(renderer,load_image("alien_yellow"),&src,&dest);
+
+        dest.y = 160;
+        SDL_RenderCopy(renderer,load_image("alien_orange"),&src,&dest);
+
+        dest.y = 220;
+        SDL_RenderCopy(renderer,load_image("alien_red"),&src,&dest);
+
+        dest.y = 325;
+        SDL_RenderCopy(renderer,load_image("alien_green"),&src,&dest);
+
+        dest.y = 385;
+        SDL_RenderCopy(renderer,load_image("alien_brown"),&src,&dest);
+
+        dest.y = 440;
+        SDL_RenderCopy(renderer,load_image("alien_grey"),&src,&dest);
+
+        SDL_RenderPresent(renderer);
+        frames_passed++;
+
+        limit_fps();
+    }
+}
+
 std::map<std::string,Mix_Chunk*> loaded_sounds;
 Mix_Chunk* load_sound(std::string s)
 {
