@@ -44,6 +44,7 @@ void Enemy::kill()
         dead = true;
         iframes = 0;
         cur_anim_frame = 0;
+        play_sound(load_sound("Alien Death"));
     }
 }
 
@@ -289,9 +290,15 @@ void Player::update()
         else rotation = std::atan2(y-pos[1],x-pos[0])*180/M_PI;
     }
 
+    if (age == squaregun && cur_cooldown==10) play_sound(load_sound("Shotgun Reload"),2);
+    if (age == pistol && cur_cooldown==10) play_sound(load_sound("Gun Reload"),2);
+
     if (moving || (age==cane && get_anim_type()==1)) cur_anim_frame++;
     if (cur_cooldown>0) cur_cooldown--;
     if (iframes>0) iframes--;
+
+    if (moving && (cur_anim_frame == 50/speed || cur_anim_frame == 25/speed)) play_sound(load_sound("Step"+std::to_string(random(1,3))));
+    if (!(age==cane && get_anim_type()==1)) cur_anim_frame %= 50/speed;
 
     for (Obstacle* o: obstacles)
     {
@@ -316,26 +323,29 @@ void Player::shoot(int x, int y)
         {
         case overpowered:
             if (this == player) screen_shake+=50;
-            //play_sound(load_sound("shockwave"));
+            play_sound(load_sound("Shockwave"));
             new Shockwave(this);
             break;
 
         case laser:
-            //play_sound(load_sound("laser"));
+            play_sound(load_sound("Laser (Selfcut)"),1);
             new Laser(this,x,y);
             break;
 
         case life_drain:
             if (lifepower > 5)
             {
+                play_sound(load_sound("Life Cannon"),1);
                 lifepower -= 5;
                 new Bullet(this, 15.*dx/sum, 15.*dy/sum);
             }
+            else cur_cooldown = 0;
             break;
 
         case squaregun:
             if (ammo > 0)
             {
+                play_sound(load_sound("Shotgun (Selfcut)"),1);
                 screen_shake+=10;
                 for (int i=-1;i<=1;i++)
                 {
@@ -343,19 +353,23 @@ void Player::shoot(int x, int y)
                 }
                 ammo--;
             }
+            else cur_cooldown = 0;
             break;
 
         case pistol:
             if (ammo > 0)
             {
+                play_sound(load_sound("Gun (Selfcut)"),1);
                 screen_shake+=5;
                 new Bullet(this, 10.*dx/sum, 10.*dy/sum);
                 ammo--;
             }
+            else cur_cooldown = 0;
             break;
 
         case cane:
             //the Melee is spawned later
+            play_sound(load_sound("Cane Hit"));
             break;
 
         case dead:
@@ -421,10 +435,7 @@ void Player::kill()
         pos[0] += hitbox_offset-camera[0];
         pos[1] += -camera[1];
 
-        SDL_SetRenderDrawColor(renderer,0,0,0,255);
-        SDL_RenderClear(renderer);
-        SDL_RenderPresent(renderer);
-        SDL_Delay(500);
+        Mix_PauseMusic();
 
         SDL_Texture* death = load_image("death");
         for (int i=0;i<80;i++)
@@ -444,6 +455,7 @@ void Player::kill()
             SDL_FlushEvents(0,-1);
         }
 
+        play_sound(load_sound("Angelic Choir"));
         SDL_Delay(100);
         for (int i=0;i<=400;i++)
         {
@@ -516,8 +528,6 @@ void Player::render()
 
 int Player::get_anim_frame()
 {
-    if (!(age==cane && get_anim_type()==1)) cur_anim_frame %= 50/speed;
-
     if (age==overpowered && get_anim_type()==1) return 0;
     else if (cur_anim_frame < 15/speed) return 0;
     else if (cur_anim_frame < 25/speed) return 1;
@@ -699,6 +709,7 @@ void NPC::kill()
     scared = false;
     iframes = 0;
     cur_anim_frame = 0;
+    play_sound(load_sound("NPC Death"+std::to_string(random(1,2))));
 }
 
 int NPC::get_anim_frame()

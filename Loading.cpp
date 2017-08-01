@@ -216,9 +216,21 @@ void sound_init()
     set_loop(load_music("Lasershow Superhero (Loop)"));
 }
 
-void play_sound(Mix_Chunk* s)
+int selfcut_channel[2]={-1,-1};
+void play_sound(Mix_Chunk* s, int selfcut)
 {
-    if (s!=nullptr) Mix_PlayChannel(-1, s, 0);
+    selfcut--;
+
+    if (s!=nullptr)
+    {
+        int channel = Mix_PlayChannel((selfcut&&(selfcut_channel[selfcut]!=-1))?selfcut_channel[selfcut]:-1, s, 0);
+
+        for (int i=0;i<=1;i++)
+        {
+            if (i == selfcut) selfcut_channel[i] = channel;
+            else if (channel == selfcut_channel[selfcut]) selfcut_channel[selfcut] = -1;
+        }
+    }
 }
 
 Mix_Music* looping;

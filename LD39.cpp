@@ -154,7 +154,7 @@ void gen_level()
 
         new Obstacle(pos[0],pos[1],64,"house"+std::to_string(random(1,4)));
     }
-    for (int i=0;i<=8;i++) new Enemy(random(50,map_size[0]),random(50,map_size[1]),random_enemy_type());
+    for (int i=0;i<=7;i++) new Enemy(random(50,map_size[0]),random(50,map_size[1]),random_enemy_type());
     for (int i=0;i<=15;i++) new NPC(random(50,map_size[0]),random(50,map_size[1]),5,"npc_"+std::to_string(random(1,3)));
 }
 
@@ -361,7 +361,8 @@ int main(int argc, char* args[])
 
             if (player->age == squaregun)
             {
-                if (transition::time == 10*15) show_image(load_image("angel"));
+                if (transition::time == 6*15) play_sound(load_sound("Angelic Choir"));
+                else if (transition::time == 10*15) show_image(load_image("angel"));
                 else if (transition::time >= 10*15)
                 {
                     filledCircleRGBA(renderer,dest.x+p.x,dest.y+p.y,40,255,255,255,std::min(100,(transition::time-7*15)));
