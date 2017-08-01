@@ -23,6 +23,7 @@ const int map_size[2] = {1000,1000};
 SDL_Texture* load_image(std::string s);
 SDL_Texture* load_bullet_image(int size);
 SDL_Texture* make_background();
+void remake_target_textures();
 
 Mix_Chunk* load_sound(std::string s);
 Mix_Music* load_music(std::string s);

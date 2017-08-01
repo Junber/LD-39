@@ -91,7 +91,11 @@ void Person::attack(Person* attacker)
 {
     if (iframes<=0)
     {
-        if (this == player) screen_shake+=15;
+        if (this == player)
+        {
+            screen_shake+=15;
+            play_sound(load_sound("Hurt"),3);
+        }
         lifepower -= 10;
         if (attacker->life_draining)
         {

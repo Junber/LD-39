@@ -51,7 +51,7 @@ void gen_enemy_types()
         f->bullet_size = 5;
         f->bullet_speed = 2;
         f->cooldown = 80;
-        f->life = 20;
+        f->life = 10;
         f->movement = circle_player;
         f->weapon = circlegun;
         f->speed = 3;
@@ -251,6 +251,10 @@ int main(int argc, char* args[])
 
     init_window();
     SDL_RenderSetScale(renderer,zoom,zoom);
+
+    show_image(load_image("titlescreen"));
+    show_image(load_image("level 1"));
+
     gen_enemy_types();
     gen_level();
 
@@ -302,6 +306,12 @@ int main(int argc, char* args[])
 			else if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT)
             {
                 player->shoot(e.button.x/zoom+camera[0], e.button.y/zoom+camera[1]);
+            }
+
+            else if (e.type == SDL_RENDER_TARGETS_RESET)
+            {
+                bg = make_background();
+                remake_target_textures();
             }
         }
 
@@ -414,9 +424,15 @@ int main(int argc, char* args[])
             {
                 levels_passed++;
 
-                if (levels_passed >= 6) show_image(load_image("end"));
+                if (levels_passed >= 6)
+                {
+                    show_image(load_image("end"));
+                    breakk = true;
+                    break;
+                }
                 else
                 {
+                    show_image(load_image("level "+std::to_string(levels_passed+1)));
                     for (Object* o: objects)
                     {
                         if (o!=player) to_delete.push_back(o);

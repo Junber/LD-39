@@ -1,6 +1,7 @@
 # 0=off; 1=on
 vsync:0
 fullscreen:1
+screen_shake:1
 
 # Resolution at zoom:1 - 960x540
 zoom:2
